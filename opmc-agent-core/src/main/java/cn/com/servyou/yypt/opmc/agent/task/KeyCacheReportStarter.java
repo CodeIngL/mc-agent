@@ -30,12 +30,12 @@ public class KeyCacheReportStarter implements ApplicationListener {
     private static ScheduledExecutorService schedualService = Executors.newScheduledThreadPool(1);
 
     /**
-     * 心跳发送启动时的初始化延迟时间,时间单位为毫秒
+     * 延迟时间,时间单位为毫秒
      */
     private static final long KEY_CACHE_INIT_DELAY_MS = 5000;
 
     /**
-     * 心跳发送间隔,时间单位为毫秒
+     * 间隔,时间单位为毫秒
      */
     private static final long KEY_CACHE_BETWEEN_PERIOD_MS = 300000;
 
@@ -53,7 +53,20 @@ public class KeyCacheReportStarter implements ApplicationListener {
      *
      */
     public void init() {
-        schedualService.scheduleAtFixedRate(keyCacheReporter, KEY_CACHE_INIT_DELAY_MS, KEY_CACHE_BETWEEN_PERIOD_MS, TimeUnit.MILLISECONDS);
+        schedualService.scheduleAtFixedRate(keyCacheReporter,
+                KEY_CACHE_INIT_DELAY_MS,
+                KEY_CACHE_BETWEEN_PERIOD_MS,
+                TimeUnit.MILLISECONDS);
     }
 
+    //------------get---------set----------
+
+
+    public KeyCacheReporter getKeyCacheReporter() {
+        return keyCacheReporter;
+    }
+
+    public void setKeyCacheReporter(KeyCacheReporter keyCacheReporter) {
+        this.keyCacheReporter = keyCacheReporter;
+    }
 }

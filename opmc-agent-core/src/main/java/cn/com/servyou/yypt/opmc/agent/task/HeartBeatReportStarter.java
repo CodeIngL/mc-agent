@@ -48,16 +48,20 @@ public class HeartBeatReportStarter implements ApplicationListener {
 
     /**
      *
+     * @param event
      */
-    public void init() {
-        schedualService.scheduleAtFixedRate(heartBeatReporter, HEART_BEAT_INIT_DELAY_MS, HEART_BEAT_BETWEEN_PERIOD_MS, TimeUnit.MILLISECONDS);
-    }
-
     @Override
     public void onApplicationEvent(ApplicationEvent event) {
         if (event instanceof AvailableEvent) {
             init();
         }
+    }
+
+    /**
+     *
+     */
+    public void init() {
+        schedualService.scheduleAtFixedRate(heartBeatReporter, HEART_BEAT_INIT_DELAY_MS, HEART_BEAT_BETWEEN_PERIOD_MS, TimeUnit.MILLISECONDS);
     }
 
     //------------get---------set----------

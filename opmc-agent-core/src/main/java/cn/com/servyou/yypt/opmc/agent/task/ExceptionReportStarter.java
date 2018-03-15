@@ -20,6 +20,9 @@ import static cn.com.servyou.yypt.opmc.agent.constant.OpmcConfigConstants.CLASS_
  */
 public class ExceptionReportStarter implements ApplicationListener {
 
+    /**
+     * 线程名字
+     */
     private static final String EXCEPTION_REPORT_STARTER_THREAD_NAME = "opmc-agent-exceptionReporter";
 
     /**
@@ -27,6 +30,16 @@ public class ExceptionReportStarter implements ApplicationListener {
      */
     @ConfigAnnotation(name = CLASS_INTERNAL_EXCEPTION_REPORTER)
     private ExceptionReporter exceptionReporter;
+
+    /**
+     * @param event 事件
+     */
+    @Override
+    public void onApplicationEvent(ApplicationEvent event) {
+        if (event instanceof AvailableEvent) {
+            init();
+        }
+    }
 
     /**
      * 初始化的时候启动异常报告线程.
@@ -45,10 +58,4 @@ public class ExceptionReportStarter implements ApplicationListener {
         this.exceptionReporter = exceptionReporter;
     }
 
-    @Override
-    public void onApplicationEvent(ApplicationEvent event) {
-        if (event instanceof AvailableEvent) {
-            init();
-        }
-    }
 }

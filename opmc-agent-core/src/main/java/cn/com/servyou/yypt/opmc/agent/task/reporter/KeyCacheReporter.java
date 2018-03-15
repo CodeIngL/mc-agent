@@ -25,4 +25,14 @@ public class KeyCacheReporter implements Runnable {
     public void run() {
         keyCacheDelegate.clear();
     }
+
+    //------------get---------set----------
+
+    public KeyCacheDelegate getKeyCacheDelegate() {
+        return keyCacheDelegate;
+    }
+
+    public void setKeyCacheDelegate(KeyCacheDelegate keyCacheDelegate) {
+        this.keyCacheDelegate = keyCacheDelegate;
+    }
 }
