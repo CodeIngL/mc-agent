@@ -26,12 +26,12 @@ import static cn.com.servyou.yypt.opmc.agent.constant.OpmcConfigConstants.CLASS_
 public class HeartBeatReportStarter implements ApplicationListener {
 
     /**
-     * 心跳发送启动时的初始化延迟时间,时间单位为毫秒
+     * 心跳发送启动时的初始化延迟时间,时间单位为毫秒。等价于5S
      */
     private static final long HEART_BEAT_INIT_DELAY_MS = 5000;
 
     /**
-     * 心跳发送间隔,时间单位为毫秒
+     * 心跳发送间隔,时间单位为毫秒。等价于300S（5分钟）
      */
     private static final long HEART_BEAT_BETWEEN_PERIOD_MS = 300000;
 

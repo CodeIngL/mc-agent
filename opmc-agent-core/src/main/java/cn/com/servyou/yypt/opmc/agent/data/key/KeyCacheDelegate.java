@@ -86,6 +86,9 @@ public class KeyCacheDelegate {
         keyCacheRegistry.registerKeyCache(method, keyCache);
     }
 
+    /**
+     * 清楚消息
+     */
     public void clear() {
         HashMap<Method, KeyCache> keyCacheMap = keyCacheRegistry.getKeyCacheMap();
         Set<Method> methods = new HashSet<Method>();

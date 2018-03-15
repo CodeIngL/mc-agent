@@ -39,9 +39,9 @@ public class OpmcSpringClientInitManager implements ApplicationContextAware {
     public void init() {
         opmcClientInitManager.start();
         ConfigurationStateHolder stateHolder = ConfigurationStateHolder.getInstance();
-        MetricsDelegate metricsDelegate = (MetricsDelegate) stateHolder.getBean(CLASS_INTERNAL_METRICS_DELEGATE);
+        MetricsDelegate metricsDelegate = (MetricsDelegate) stateHolder.getBean(CLASS_INTERNAL_METRICS_DELEGATE, true);
         metricsDelegate.setRegistry(SharedMetricRegistries.getOrCreate("metricRegistry"));
-        Configuration configuration = (Configuration) stateHolder.getBean(CLASS_INTERNAL_CONFIGURATION);
+        Configuration configuration = (Configuration) stateHolder.getBean(CLASS_INTERNAL_CONFIGURATION, true);
         copyConfiguration(configuration);
         if (configuration.isEnable()) {
             stateHolder.setContextState(ConfigurationStateHolder.ConfigurationState.AVAILABLE);

@@ -61,10 +61,10 @@ public class ConfigurationStateHolder implements ApplicationEventMulticaster {
         LOGGER.debug("切换状态，准备广播消息");
         switch (contextState) {
             case UNAVAILABLE:
-                multicastEvent(new AvailableEvent(this));
+                multicastEvent(new UnavailableEvent(this));
                 break;
             case AVAILABLE:
-                multicastEvent(new UnavailableEvent(this));
+                multicastEvent(new AvailableEvent(this));
                 break;
             default:
                 break;
@@ -131,6 +131,14 @@ public class ConfigurationStateHolder implements ApplicationEventMulticaster {
         }
         return REGISTRY.get(name);
     }
+
+    public Object getBean(String name, Boolean force) {
+        if (force) {
+            return REGISTRY.get(name);
+        }
+        return getBean(name);
+    }
+
 
     void registryAllBean(Map<String, Object> registry) {
         if (registry == null || registry.size() == 0) {

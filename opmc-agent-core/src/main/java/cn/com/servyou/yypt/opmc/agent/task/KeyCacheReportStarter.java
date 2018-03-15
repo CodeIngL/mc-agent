@@ -30,12 +30,12 @@ public class KeyCacheReportStarter implements ApplicationListener {
     private static ScheduledExecutorService schedualService = Executors.newScheduledThreadPool(1);
 
     /**
-     * 延迟时间,时间单位为毫秒
+     * 延迟时间,时间单位为毫秒。等价于5S
      */
     private static final long KEY_CACHE_INIT_DELAY_MS = 5000;
 
     /**
-     * 间隔,时间单位为毫秒
+     * 间隔,时间单位为毫秒。等价于300S（5分钟）
      */
     private static final long KEY_CACHE_BETWEEN_PERIOD_MS = 300000;
 
