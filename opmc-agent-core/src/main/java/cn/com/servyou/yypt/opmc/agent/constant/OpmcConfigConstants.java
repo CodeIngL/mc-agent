@@ -9,9 +9,13 @@ package cn.com.servyou.yypt.opmc.agent.constant;
  */
 public class OpmcConfigConstants {
 
+    //about metrics
+
     public static final String CLASS_INTERNAL_METRICS_KEY_REGISTRY = "opmcSystem.class.internalMetricsKeyRegistry";
 
     public static final String CLASS_INTERNAL_METRICS_DELEGATE = "opmcSystem.class.internalMetricsDelegate";
+
+    //about exception
 
     public static final String CLASS_INTERNAL_EXCEPTION_HOLDER_REGISTRY = "opmcSystem.class.internalExceptionHolderRegistry";
 
@@ -21,9 +25,25 @@ public class OpmcConfigConstants {
 
     public static final String CLASS_INTERNAL_EXCEPTION_REPORTER_STARTER = "opmcSystem.class.internalExceptionReporterStarter";
 
+    //about heartBeat
+
     public static final String CLASS_INTERNAL_HEART_BEAT_REPORTER = "opmcSystem.class.internalHeartBeatReporter";
 
     public static final String CLASS_INTERNAL_HEART_BEAT_REPORTER_STARTER = "opmcSystem.class.internalHeartBeatReporterStarter";
+
+    //about keyCache
+
+    public static final String CLASS_INTERNAL_KEY_CACHE_REGISTRY = "opmcSystem.class.internalKeyCacheRegistry";
+
+    public static final String CLASS_INTERNAL_KEY_CACHE_DELEGATE = "opmcSystem.class.internalKeyCacheDelegate";
+
+    public static final String CLASS_INTERNAL_KEY_CACHE_REPORTER = "opmcSystem.class.internalKeyCacheReporter";
+
+    public static final String CLASS_INTERNAL_KEY_CACHE_REPORTER_STARTER = "opmcSystem.class.internalKeyCacheReporterStarter";
+
+
+
+    //about other's
 
     public static final String CLASS_INTERNAL_CONFIGURATION = "opmcSystem.class.internalConfiguration";
 
@@ -42,5 +62,9 @@ public class OpmcConfigConstants {
     public static final String OPMC_USER_CONFIG_EXCEPTION_EXCLUDES = "opmc.user.config.exceptionExcludes";
 
     public static final String OPMC_USER_CONFIG_EXCEPTION_HOLDER_QUEUE_SIZE = "opmc.user.config.exceptionHolderQueueSize";
+
+    public static final String OPMC_USER_KEY_CACHE_REGISTRY_EXPIRE_TIME = "opmc.user.keyCache.registry.expire.time";
+
+    public static final String OPMC_USER_KEY_CACHE_REGISTRY_MAX_SIZE = "opmc.user.keyCache.registry.maxSize";
 
 }

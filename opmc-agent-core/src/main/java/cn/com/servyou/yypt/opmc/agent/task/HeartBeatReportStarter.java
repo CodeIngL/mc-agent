@@ -53,6 +53,13 @@ public class HeartBeatReportStarter implements ApplicationListener {
         schedualService.scheduleAtFixedRate(heartBeatReporter, HEART_BEAT_INIT_DELAY_MS, HEART_BEAT_BETWEEN_PERIOD_MS, TimeUnit.MILLISECONDS);
     }
 
+    @Override
+    public void onApplicationEvent(ApplicationEvent event) {
+        if (event instanceof AvailableEvent) {
+            init();
+        }
+    }
+
     //------------get---------set----------
 
     public HeartBeatReporter getHeartBeatReporter() {
@@ -63,10 +70,4 @@ public class HeartBeatReportStarter implements ApplicationListener {
         this.heartBeatReporter = heartBeatReporter;
     }
 
-    @Override
-    public void onApplicationEvent(ApplicationEvent event) {
-        if (event instanceof AvailableEvent) {
-            init();
-        }
-    }
 }
