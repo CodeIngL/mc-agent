@@ -6,6 +6,9 @@ import cn.com.servyou.yypt.opmc.agent.entity.DivideConfigInfo;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * <p>Description: </p>
@@ -34,22 +37,23 @@ public class KeyCacheDelegate {
         if (method == null) {
             return;
         }
-        HashMap<Method, KeyCache> keyCacheInfoHashMap = keyCacheRegistry.getKeyCacheMap();
-        if (keyCacheInfoHashMap.containsKey(method)) {
-            return;
-        }
         KeyCache keyCacheInfo = new KeyCache();
         keyCacheInfo.setStaticKey(staticKey);
         keyCacheInfo.setConfigIno(divideConfigInfo);
-        if (divideConfigInfo == null) {
-            keyCacheInfo.setHasDynamicKey(false);
-            return;
+        if (divideConfigInfo != null &&
+                divideConfigInfo.getDivideParamGetType() != null &&
+                divideConfigInfo.getDivideParamGetType().length > 0) {
+            keyCacheInfo.setHasDynamicKey(true);
         }
-        if (divideConfigInfo.getDivideParamGetType() == null || divideConfigInfo.getDivideParamGetType().length == 0) {
-            keyCacheInfo.setHasDynamicKey(false);
-            return;
-        }
-        keyCacheInfo.setHasDynamicKey(true);
+        keyCacheRegistry.registerKeyCache(method, keyCacheInfo);
+    }
+
+    /**
+     * @param method
+     * @return
+     */
+    public KeyCache takeKeyCache(Method method) {
+        return keyCacheRegistry.get(method);
     }
 
     /**
@@ -73,4 +77,31 @@ public class KeyCacheDelegate {
         keyCacheInfo.setStaticKey(staticKey);
     }
 
+
+    /**
+     * @param method
+     * @param keyCache
+     */
+    public void registerKeyCache(Method method, KeyCache keyCache) {
+        keyCacheRegistry.registerKeyCache(method, keyCache);
+    }
+
+    public void clear() {
+        HashMap<Method, KeyCache> keyCacheMap = keyCacheRegistry.getKeyCacheMap();
+        Set<Method> methods = new HashSet<Method>();
+        for (Map.Entry<Method, KeyCache> entry : keyCacheMap.entrySet()) {
+            KeyCache keyCache = entry.getValue();
+            if (keyCache == null) {
+                continue;
+            }
+            if (System.currentTimeMillis() - keyCacheRegistry.getExpireTime() > keyCache.getTimestamp()) {
+                methods.add(entry.getKey());
+            }
+        }
+        for (Method method : methods) {
+            keyCacheMap.remove(method);
+        }
+        methods.clear();
+
+    }
 }

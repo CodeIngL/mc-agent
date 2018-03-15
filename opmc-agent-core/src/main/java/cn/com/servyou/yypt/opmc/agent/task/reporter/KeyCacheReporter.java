@@ -14,7 +14,7 @@ import cn.com.servyou.yypt.opmc.agent.log.LogFactory;
  * @date 2018/3/15
  * @see
  */
-public class KeyCacheReporter implements Runnable  {
+public class KeyCacheReporter implements Runnable {
 
     private static final Log LOGGER = LogFactory.getLog(KeyCacheReporter.class);
 
@@ -23,6 +23,6 @@ public class KeyCacheReporter implements Runnable  {
 
     @Override
     public void run() {
-
+        keyCacheDelegate.clear();
     }
 }

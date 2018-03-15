@@ -2,6 +2,7 @@ package cn.com.servyou.yypt.opmc.agent.entity;
 
 import cn.com.servyou.yypt.opmc.agent.fetch.annotation.define.DivideParamGetType;
 import cn.com.servyou.yypt.opmc.agent.fetch.divide.DivideParamParser;
+import cn.com.servyou.yypt.opmc.agent.util.StringUtils;
 
 /**
  * <p>Function: [功能模块：明细统计的配置项实体]</p>
@@ -51,5 +52,29 @@ public class DivideConfigInfo {
     public Class<? extends DivideParamParser>[] getDivideParamParserClass() {
         return divideParamParserClass;
     }
+
+    /**
+     * 性质校验
+     *
+     * @param divideConfigInfo
+     * @return
+     */
+    public static STATE valid(DivideConfigInfo divideConfigInfo) {
+        if (divideConfigInfo == null || StringUtils.isEmpty(divideConfigInfo.getDivideParamName())) {
+            return STATE.UN_CONF;
+        }
+        if (divideConfigInfo.getDivideParamGetType() == null || divideConfigInfo.getDivideParamGetType().length == 0) {
+            return STATE.ERR_CONF;
+        }
+        return STATE.CONF;
+    }
+
+    public enum STATE {
+        UN_CONF,
+        ERR_CONF,
+        CONF;
+    }
+
+
 
 }

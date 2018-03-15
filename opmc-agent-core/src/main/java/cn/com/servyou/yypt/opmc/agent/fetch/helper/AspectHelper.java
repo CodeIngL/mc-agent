@@ -3,6 +3,8 @@ package cn.com.servyou.yypt.opmc.agent.fetch.helper;
 import cn.com.servyou.opmc.agent.conf.annotation.ConfigAnnotation;
 import cn.com.servyou.yypt.opmc.agent.constant.Constants;
 import cn.com.servyou.yypt.opmc.agent.data.cache.DivideParamParserRegistry;
+import cn.com.servyou.yypt.opmc.agent.data.key.KeyCache;
+import cn.com.servyou.yypt.opmc.agent.data.key.KeyCacheDelegate;
 import cn.com.servyou.yypt.opmc.agent.data.metrics.MetricsKey;
 import cn.com.servyou.yypt.opmc.agent.entity.DivideConfigInfo;
 import cn.com.servyou.yypt.opmc.agent.fetch.annotation.define.DivideParamGetType;
@@ -18,6 +20,8 @@ import java.lang.reflect.Method;
 import java.text.MessageFormat;
 
 import static cn.com.servyou.yypt.opmc.agent.constant.OpmcConfigConstants.CLASS_INTERNAL_DIVIDE_PARAM_PARSER_REGISTRY;
+import static cn.com.servyou.yypt.opmc.agent.constant.OpmcConfigConstants.CLASS_INTERNAL_KEY_CACHE_DELEGATE;
+import static cn.com.servyou.yypt.opmc.agent.constant.OpmcConfigConstants.CLASS_INTERNAL_KEY_CACHE_REGISTRY;
 import static cn.com.servyou.yypt.opmc.agent.fetch.annotation.getter.AnnotationPropertiesGetterUtils.getAnnotationDivideConfig;
 import static cn.com.servyou.yypt.opmc.agent.fetch.annotation.getter.AnnotationPropertiesGetterUtils.getAnnotationValue;
 
@@ -44,40 +48,78 @@ public class AspectHelper {
     @ConfigAnnotation(name = CLASS_INTERNAL_DIVIDE_PARAM_PARSER_REGISTRY)
     private DivideParamParserRegistry divideParamParserCache;
 
-    public MetricsKey fetchMetricsKeys(ProceedingJoinPoint pjp, AnnotationPropertiesGetter annotationPropertiesGetter) throws NoSuchMethodException, IllegalAccessException, ClassNotFoundException, InstantiationException {
-        Class annotationClass = annotationPropertiesGetter.getAnnotation();
-        String nameSpace = annotationClass.getSimpleName();
+    @ConfigAnnotation(name = CLASS_INTERNAL_KEY_CACHE_DELEGATE)
+    private KeyCacheDelegate keyCacheDelegate;
+
+    public MetricsKey fetchMetricsKeys(ProceedingJoinPoint pjp, AnnotationPropertiesGetter getter) throws NoSuchMethodException,
+            IllegalAccessException, ClassNotFoundException, InstantiationException {
+        //命名空间
+        String nameSpace = getter.getAnnotation().getSimpleName();
         //获取注册方法
         Method method = MethodUtil.getSignatureMethod(pjp);
+        KeyCache keyCache = keyCacheDelegate.takeKeyCache(method);
+
+        //尝试从缓存中获得数据
+        if (keyCache != null) {
+            String staticKey = keyCache.getStaticKey();
+            if (keyCache.isHasDynamicKey()) {
+                DivideConfigInfo divideConfigInfo = keyCache.getConfigIno();
+                String divideParamValue = getArgStringByDivideParam(pjp, divideConfigInfo);
+                if (StringUtils.isEmpty(divideParamValue)) {
+                    return new MetricsKey(staticKey, null);
+                }
+                String dynamicKeys = MessageFormat.format(KEY_PATTEN, staticKey, divideConfigInfo.getDivideParamName(), divideParamValue);
+                return new MetricsKey(staticKey, dynamicKeys);
+            }
+            return new MetricsKey(staticKey, null);
+        }
+
+
+        Method outMethod = method;
+        //缓存中不存在数据，或者已经过期
         if (method.getDeclaredAnnotations().length == 0) {
             method = MethodUtil.getRealMethod(pjp, method.getParameterTypes());
         }
         //key的命名规则为统计类型.类名.方法别名(如果注解时声明了name属性,就取此属性,否则取方法名),例:Timer.DemoClass.DemoName
-        String value = getAnnotationValue(method, annotationPropertiesGetter);
+        String value = getAnnotationValue(method, getter);
         if (StringUtils.isEmpty(value)) {
             value = pjp.getSignature().getName();
         }
         String staticKey = MessageFormat.format(KEY_PATTEN, nameSpace, pjp.getTarget().getClass().getSimpleName(), value);
 
+        keyCache = new KeyCache();
+        keyCache.setStaticKey(staticKey);
+
+
         //如果方法的注解有配置divideParamName属性, 说明该方法开启了按参数明细动态统计.
         //取方法的注解的divideParamName属性作为明细key值的开头,然后取方法名称为divideParamName的参数的实际值作为明细key值的结尾.
         //之后将明细key值与方法key值组装作为明细的key值,格式为方法初始key值 + .号 + 明细key值
         //获取按参数明细统计的配置实体
-        DivideConfigInfo divideConfigInfo = getAnnotationDivideConfig(method, annotationPropertiesGetter);
-        if (divideConfigInfo == null || StringUtils.isEmpty(divideConfigInfo.getDivideParamName())) {
+        boolean hasDynamicKey = true;
+        DivideConfigInfo divideConfigInfo = getAnnotationDivideConfig(method, getter);
+        switch (DivideConfigInfo.valid(divideConfigInfo)) {
+            case ERR_CONF:
+                LOGGER.warn("Method :[" +
+                        pjp.getSignature().getName() +
+                        "] in class :[" + pjp.getTarget() +
+                        "] has divideParamName config ,but divideParamGetType has not been configurated.");
+            case UN_CONF:
+                hasDynamicKey = false;
+        }
+        keyCacheDelegate.registerKeyCache(outMethod, keyCache);
+        keyCache.setHasDynamicKey(hasDynamicKey);
+        if (!hasDynamicKey) {
             return new MetricsKey(staticKey, null);
         }
-        if (divideConfigInfo.getDivideParamGetType() == null || divideConfigInfo.getDivideParamGetType().length == 0) {
-            LOGGER.warn("Method :[" + pjp.getSignature().getName() + "] in class :[" + pjp.getTarget() + "] has divideParamName config ,but divideParamGetType has not been configurated.");
-            return new MetricsKey(staticKey, null);
-        }
+        keyCache.setConfigIno(divideConfigInfo);
         //获取参数名为divideParamName的具体参数值,根据参数获取类型来获取
         String divideParamValue = getArgStringByDivideParam(pjp, divideConfigInfo);
-        if (StringUtils.isEmpty(divideParamValue)) {
-            return new MetricsKey(staticKey, null);
+        if (StringUtils.isNotEmpty(divideParamValue)) {
+            String dynamicKeys = MessageFormat.format(KEY_PATTEN, staticKey, divideConfigInfo.getDivideParamName(), divideParamValue);
+            return new MetricsKey(staticKey, dynamicKeys);
+
         }
-        String dynamicKeys = MessageFormat.format(KEY_PATTEN, staticKey, divideConfigInfo.getDivideParamName(), divideParamValue);
-        return new MetricsKey(staticKey, dynamicKeys);
+        return new MetricsKey(staticKey, null);
     }
 
     /**
