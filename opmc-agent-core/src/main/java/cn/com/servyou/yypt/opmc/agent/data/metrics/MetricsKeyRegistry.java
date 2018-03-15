@@ -74,6 +74,9 @@ public class MetricsKeyRegistry {
             return false;
         }
         putKeyType(keyType);
+        if (keyName == null || "".equals(keyName.trim())) {
+            return false;
+        }
         Set<String> keySet = getKeySet(keyType);
         if (!keySet.contains(keyName)) {
             keySet.add(keyName);

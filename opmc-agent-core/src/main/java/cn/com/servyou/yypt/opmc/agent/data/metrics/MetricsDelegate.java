@@ -28,8 +28,7 @@ public class MetricsDelegate implements ApplicationListener {
 
     private static final Log LOGGER = LogFactory.getLog(MetricsDelegate.class);
 
-    private static final String MBEAN_NAMESPACE = "servyou";
-
+    private static final String MBEAN_NAMESPACE = "servyou.";
 
     private MetricRegistry registry = new MetricRegistry();
 
