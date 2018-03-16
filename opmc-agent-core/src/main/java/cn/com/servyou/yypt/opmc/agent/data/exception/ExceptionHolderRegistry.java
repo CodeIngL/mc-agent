@@ -3,7 +3,7 @@ package cn.com.servyou.yypt.opmc.agent.data.exception;
 import cn.com.servyou.opmc.agent.conf.annotation.ConfigAnnotation;
 import cn.com.servyou.opmc.agent.conf.init.Initializer;
 
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.*;
 
 import static cn.com.servyou.yypt.opmc.agent.constant.OpmcConfigConstants.OPMC_USER_CONFIG_EXCEPTION_HOLDER_QUEUE_SIZE;
 
@@ -24,6 +24,8 @@ public class ExceptionHolderRegistry implements Initializer {
     @ConfigAnnotation(name = OPMC_USER_CONFIG_EXCEPTION_HOLDER_QUEUE_SIZE)
     private int queueSize;
 
+    private ThreadPoolExecutor executor;
+
     /**
      * 待发送的异常队列
      */
@@ -31,6 +33,7 @@ public class ExceptionHolderRegistry implements Initializer {
 
     /**
      * 放入队列
+     *
      * @param exceptionHolder 对象
      */
     public void put(ExceptionHolder exceptionHolder) {
@@ -39,8 +42,26 @@ public class ExceptionHolderRegistry implements Initializer {
         }
     }
 
+
+    /**
+     * 放入队列
+     *
+     * @param exceptionHolder 对象
+     */
+    public void putUpdate(ExceptionHolder exceptionHolder) {
+        if (exceptionHolder == null) {
+            return;
+        }
+        if (executor != null) {
+            executor.submit(new ExceptionTask(exceptionHolder, exceptionsCacheQueue));
+            return;
+        }
+        exceptionsCacheQueue.offer(exceptionHolder);
+    }
+
     /**
      * 取
+     *
      * @return 队列对象
      * @throws InterruptedException
      */
@@ -51,6 +72,7 @@ public class ExceptionHolderRegistry implements Initializer {
     @Override
     public void init() {
         exceptionsCacheQueue = new LinkedBlockingQueue<ExceptionHolder>(queueSize);
+        executor = new ThreadPoolExecutor(3, 3, 30, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(16));
     }
 
     public int getQueueSize() {
@@ -59,5 +81,52 @@ public class ExceptionHolderRegistry implements Initializer {
 
     public void setQueueSize(int queueSize) {
         this.queueSize = queueSize;
+    }
+
+    static class ExceptionTask implements Runnable {
+
+        private ExceptionHolder exceptionHolder;
+
+        private LinkedBlockingQueue<ExceptionHolder> queue;
+
+        public ExceptionTask(ExceptionHolder exceptionHolder, LinkedBlockingQueue<ExceptionHolder> queue) {
+            this.exceptionHolder = exceptionHolder;
+            this.queue = queue;
+        }
+
+        @Override
+        public void run() {
+            if (exceptionHolder == null) {
+                queue = null;
+                return;
+            }
+            if (queue == null) {
+                return;
+            }
+            int count = exceptionHolder.getCounts();
+            try {
+                switch (count) {
+                    case 1:
+                        Thread.sleep(1000);
+                        break;
+                    case 2:
+                        Thread.sleep(3000);
+                        break;
+                    case 3:
+                        Thread.sleep(5000);
+                        break;
+                    case 4:
+                        break;
+                }
+                if (count < 4) {
+                    queue.offer(exceptionHolder);
+                }
+
+            } catch (Exception e) {
+            } finally {
+                queue = null;
+                exceptionHolder = null;
+            }
+        }
     }
 }

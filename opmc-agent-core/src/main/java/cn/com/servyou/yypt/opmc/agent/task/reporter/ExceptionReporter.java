@@ -61,13 +61,13 @@ public class ExceptionReporter implements Runnable {
     @Override
     public void run() {
         while (true) {
-            if (checkAvailableAndDelay()) {
+            if (!checkAvailableAndDelay()) {
                 continue;
             }
-            ;
             ExceptionHolderRegistry registry = exceptionHolderRegistry;
-            ExceptionHolder exceptionHolder = null;
             clearExpireRecordsInExceptionCaughtMap();
+
+            ExceptionHolder exceptionHolder = null;
             try {
                 exceptionHolder = registry.take();
                 if (!isExceptionNeedToSend(exceptionHolder.getThrowable())) {
@@ -75,11 +75,11 @@ public class ExceptionReporter implements Runnable {
                 }
                 String result = HttpUtils.postForm(configuration.getServerUrl() + EXCEPTION_REPORT_URL, formatException(exceptionHolder), "utf-8");
                 if (StringUtils.isEmpty(result)) {
-                    registry.put(exceptionHolder);
+                    registry.putUpdate(exceptionHolder);
                 }
             } catch (IOException e) {
                 LOGGER.warn("IOException occurred on sending exception info to OPMC server. exception info will be put back to cache and wait several seconds.! ", e);
-                registry.put(exceptionHolder);
+                registry.putUpdate(exceptionHolder);
             } catch (InterruptedException e) {
                 LOGGER.warn("", e);
             } catch (Throwable e) {
