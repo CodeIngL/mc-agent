@@ -10,18 +10,6 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>opmc-agent-spring</artifactId>
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 
     <properties>
         <spring.version>4.1.6.RELEASE</spring.version>
@@ -29,11 +17,9 @@
     </properties>
 
     <dependencies>
-
         <dependency>
             <groupId>cn.com.servyou</groupId>
             <artifactId>opmc-agent-core</artifactId>
-            <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.aspectj</groupId>
@@ -84,17 +70,10 @@
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>1.7.21</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
-            <version>1.7.21</version>
+            <version>${slf.version}</version>
             <scope>provided</scope>
         </dependency>
-
     </dependencies>
 
 </project>
