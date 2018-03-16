@@ -1,9 +1,13 @@
 package cn.com.servyou.opmc.agent.conf.annotation;
 
-import java.lang.annotation.*;
+
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+import java.lang.annotation.RetentionPolicy;
 
 /**
- *
  * <p>Description: 系统配置注解</p>
  * <p>税友软件集团有限公司</p>
  *
@@ -15,17 +19,17 @@ import java.lang.annotation.*;
 public @interface ConfigAnnotation {
 
     /**
-     * 字段名内部
+     * @return 字段名内部
      */
     String name();
 
     /**
-     * 字段值
+     * @return 字段值
      */
     String value() default "";
 
     /**
-     * 是否必要
+     * @return 是否必要
      */
     boolean required() default true;
 

@@ -132,6 +132,13 @@ public class ConfigurationStateHolder implements ApplicationEventMulticaster {
         return REGISTRY.get(name);
     }
 
+    /**
+     * 危险的操作,你必须要知道force的意义
+     * 获得注册表中的对象
+     * @param name 对象名
+     * @param force 强制获得
+     * @return 对象
+     */
     public Object getBean(String name, Boolean force) {
         if (force) {
             return REGISTRY.get(name);

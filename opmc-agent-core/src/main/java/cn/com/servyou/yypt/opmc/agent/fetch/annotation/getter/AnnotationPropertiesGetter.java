@@ -1,7 +1,11 @@
 package cn.com.servyou.yypt.opmc.agent.fetch.annotation.getter;
 
 import cn.com.servyou.yypt.opmc.agent.entity.DivideConfigInfo;
-import cn.com.servyou.yypt.opmc.agent.fetch.annotation.define.*;
+import cn.com.servyou.yypt.opmc.agent.fetch.annotation.define.MCCounter;
+import cn.com.servyou.yypt.opmc.agent.fetch.annotation.define.MCHistogram;
+import cn.com.servyou.yypt.opmc.agent.fetch.annotation.define.MCMeter;
+import cn.com.servyou.yypt.opmc.agent.fetch.annotation.define.MCGauge;
+import cn.com.servyou.yypt.opmc.agent.fetch.annotation.define.MCTimer;
 
 /**
  * <p>Function: [功能模块：注解属性的获取器]</p>

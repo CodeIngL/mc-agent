@@ -13,6 +13,7 @@ package cn.com.servyou.yypt.opmc.agent.fetch.divide;
 public interface DivideParamParser {
     /**
      * 转置方法
+     *
      * @param params 参数
      */
     String parse(Object... params);

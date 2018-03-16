@@ -5,7 +5,11 @@ import cn.com.servyou.yypt.opmc.agent.log.Log;
 import cn.com.servyou.yypt.opmc.agent.log.LogFactory;
 
 import java.text.MessageFormat;
-import java.util.*;
+import java.util.Map;
+import java.util.Set;
+import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Collections;
 
 /**
  * <p>Function: [功能模块：key值缓存]</p>

@@ -10,7 +10,7 @@ import cn.com.servyou.yypt.opmc.agent.fetch.divide.DivideParamParser;
  *
  * @author linj
  * @version 1.0
- * @date 17/12/5
+ *          17/12/5
  */
 public class SecondInputParamParser implements DivideParamParser {
     @Override

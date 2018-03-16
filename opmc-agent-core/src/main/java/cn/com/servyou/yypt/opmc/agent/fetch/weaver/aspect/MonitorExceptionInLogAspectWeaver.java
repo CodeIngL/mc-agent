@@ -19,7 +19,7 @@ import static cn.com.servyou.yypt.opmc.agent.constant.OpmcConfigConstants.CLASS_
  *
  * @author linj
  * @version 1.0
- * @date 17/11/20
+ *          17/11/20
  */
 @Aspect
 public abstract class MonitorExceptionInLogAspectWeaver {

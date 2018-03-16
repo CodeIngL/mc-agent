@@ -4,15 +4,17 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- *
  * <p>Description: 简单的配置实现类</p>
  * <p>税友软件集团有限公司</p>
  *
  * @author laihj
- * @date 2018/2/5
+ *         2018/2/5
  */
 public class PropConfig implements Config {
 
+    /**
+     * 配置对
+     */
     private Map<String, String> conf = new ConcurrentHashMap<String, String>(16);
 
     @Override

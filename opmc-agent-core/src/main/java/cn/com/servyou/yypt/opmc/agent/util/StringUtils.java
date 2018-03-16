@@ -5,23 +5,27 @@ package cn.com.servyou.yypt.opmc.agent.util;
  * <p>税友软件集团有限公司</p>
  *
  * @author laihj
- * @date 2018/2/5
+ *         2018/2/5
  */
 public abstract class StringUtils {
 
     /**
-     * @param str
-     * @return
+     * 是否为空
+     *
+     * @param str 字符串
+     * @return 是否为空
      */
-    public static boolean isEmpty(Object str) {
+    public static boolean isEmpty(String str) {
         return str == null || "".equals(str);
     }
 
     /**
-     * @param str
-     * @return
+     * 是否为空
+     *
+     * @param str 字符串
+     * @return 是否为空
      */
-    public static boolean isNotEmpty(Object str) {
+    public static boolean isNotEmpty(String str) {
         return !isEmpty(str);
     }
 

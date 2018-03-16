@@ -8,8 +8,14 @@ package cn.com.servyou.yypt.opmc.agent.data.metrics;
  */
 public class MetricsKey {
 
+    /**
+     * 静态键
+     */
     private String key;
 
+    /**
+     * 动态键
+     */
     private String dynamicKey;
 
     public MetricsKey(String key, String dynamicKey) {

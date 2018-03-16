@@ -85,8 +85,14 @@ public class ExceptionHolderRegistry implements Initializer {
 
     static class ExceptionTask implements Runnable {
 
+        /**
+         * 移除
+         */
         private ExceptionHolder exceptionHolder;
 
+        /**
+         * 队列
+         */
         private LinkedBlockingQueue<ExceptionHolder> queue;
 
         public ExceptionTask(ExceptionHolder exceptionHolder, LinkedBlockingQueue<ExceptionHolder> queue) {

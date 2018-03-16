@@ -7,7 +7,6 @@ import cn.com.servyou.yypt.opmc.agent.fetch.annotation.define.*;
 import cn.com.servyou.yypt.opmc.agent.log.Log;
 import cn.com.servyou.yypt.opmc.agent.log.LogFactory;
 import cn.com.servyou.yypt.opmc.agent.util.MethodUtil;
-import cn.com.servyou.yypt.opmc.agent.util.StringUtils;
 import com.codahale.metrics.*;
 
 import java.lang.reflect.Method;
@@ -22,16 +21,25 @@ import static cn.com.servyou.yypt.opmc.agent.constant.Constants.METRICS_DYNAMIC_
  *
  * @author linj
  * @version 1.0
- * @date 17/11/10
+ *          17/11/10
  */
 public class MetricsDelegate implements ApplicationListener {
 
     private static final Log LOGGER = LogFactory.getLog(MetricsDelegate.class);
 
+    /**
+     * 命名空间
+     */
     private static final String MBEAN_NAMESPACE = "servyou.";
 
+    /**
+     * 注册表
+     */
     private MetricRegistry registry = new MetricRegistry();
 
+    /**
+     * 注册表
+     */
     private MetricsKeyRegistry keyRegistry = new MetricsKeyRegistry();
 
     /**
@@ -52,7 +60,7 @@ public class MetricsDelegate implements ApplicationListener {
     }
 
     /**
-     * @param keyType
+     * @param keyType 键类型
      */
     public void registerKeyType(String keyType) {
         keyRegistry.putKeyType(keyType);

@@ -1,6 +1,10 @@
 package cn.com.servyou.yypt.opmc.agent.fetch.annotation.define;
 
-import java.lang.annotation.*;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import java.lang.annotation.Documented;
 
 /**
  * <p>Function: [功能模块：]</p>

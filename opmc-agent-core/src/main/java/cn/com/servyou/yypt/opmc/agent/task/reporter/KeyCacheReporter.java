@@ -11,13 +11,15 @@ import cn.com.servyou.yypt.opmc.agent.log.LogFactory;
  * <p>税友软件集团有限公司</p>
  *
  * @author laihj
- * @date 2018/3/15
- * @see
+ *         2018/3/15
  */
 public class KeyCacheReporter implements Runnable {
 
     private static final Log LOGGER = LogFactory.getLog(KeyCacheReporter.class);
 
+    /**
+     * keyCache委托
+     */
     @ConfigAnnotation(name = OpmcConfigConstants.CLASS_INTERNAL_KEY_CACHE_DELEGATE)
     private KeyCacheDelegate keyCacheDelegate;
 

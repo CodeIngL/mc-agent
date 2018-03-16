@@ -7,18 +7,33 @@ import cn.com.servyou.yypt.opmc.agent.entity.DivideConfigInfo;
  * <p>税友软件集团有限公司</p>
  *
  * @author laihj
- * @date 2018/3/15
- * @see
+ *         2018/3/15
  */
 public class KeyCache {
 
+    /**
+     * 静态值
+     */
     private String staticKey;
 
+    /**
+     * 是否含有动态值
+     */
     private boolean hasDynamicKey = false;
 
+    /**
+     * 动态配置
+     */
     private DivideConfigInfo configIno;
 
+    /**
+     * 产生时间
+     */
     private Long timestamp = System.currentTimeMillis();
+
+
+    //---get---set方法
+
 
     public String getStaticKey() {
         return staticKey;

@@ -1,7 +1,6 @@
 package cn.com.servyou.yypt.opmc.agent.fetch.helper;
 
 import cn.com.servyou.opmc.agent.conf.annotation.ConfigAnnotation;
-import cn.com.servyou.yypt.opmc.agent.constant.Constants;
 import cn.com.servyou.yypt.opmc.agent.data.cache.DivideParamParserRegistry;
 import cn.com.servyou.yypt.opmc.agent.data.key.KeyCache;
 import cn.com.servyou.yypt.opmc.agent.data.key.KeyCacheDelegate;
@@ -21,7 +20,6 @@ import java.text.MessageFormat;
 
 import static cn.com.servyou.yypt.opmc.agent.constant.OpmcConfigConstants.CLASS_INTERNAL_DIVIDE_PARAM_PARSER_REGISTRY;
 import static cn.com.servyou.yypt.opmc.agent.constant.OpmcConfigConstants.CLASS_INTERNAL_KEY_CACHE_DELEGATE;
-import static cn.com.servyou.yypt.opmc.agent.constant.OpmcConfigConstants.CLASS_INTERNAL_KEY_CACHE_REGISTRY;
 import static cn.com.servyou.yypt.opmc.agent.fetch.annotation.getter.AnnotationPropertiesGetterUtils.getAnnotationDivideConfig;
 import static cn.com.servyou.yypt.opmc.agent.fetch.annotation.getter.AnnotationPropertiesGetterUtils.getAnnotationValue;
 
@@ -33,7 +31,7 @@ import static cn.com.servyou.yypt.opmc.agent.fetch.annotation.getter.AnnotationP
  *
  * @author linj
  * @version 1.0
- * @date 2017/8/15
+ *          2017/8/15
  */
 public class AspectHelper {
 
@@ -45,12 +43,29 @@ public class AspectHelper {
      */
     public static final String KEY_PATTEN = "{0}.{1}.{2}";
 
+    /**
+     * 注册表
+     */
     @ConfigAnnotation(name = CLASS_INTERNAL_DIVIDE_PARAM_PARSER_REGISTRY)
     private DivideParamParserRegistry divideParamParserCache;
 
+    /**
+     * keyCache委托处理
+     */
     @ConfigAnnotation(name = CLASS_INTERNAL_KEY_CACHE_DELEGATE)
     private KeyCacheDelegate keyCacheDelegate;
 
+    /**
+     * 获取监控键值
+     *
+     * @param pjp    pjp
+     * @param getter getter
+     * @return MetricsKey
+     * @throws NoSuchMethodException  异常
+     * @throws IllegalAccessException 异常
+     * @throws ClassNotFoundException 异常
+     * @throws InstantiationException 异常
+     */
     public MetricsKey fetchMetricsKeys(ProceedingJoinPoint pjp, AnnotationPropertiesGetter getter) throws NoSuchMethodException,
             IllegalAccessException, ClassNotFoundException, InstantiationException {
         //命名空间

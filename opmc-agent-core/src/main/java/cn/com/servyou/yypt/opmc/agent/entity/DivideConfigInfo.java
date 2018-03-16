@@ -56,8 +56,8 @@ public class DivideConfigInfo {
     /**
      * 性质校验
      *
-     * @param divideConfigInfo
-     * @return
+     * @param divideConfigInfo 配置信息
+     * @return 状态
      */
     public static STATE valid(DivideConfigInfo divideConfigInfo) {
         if (divideConfigInfo == null || StringUtils.isEmpty(divideConfigInfo.getDivideParamName())) {
@@ -70,11 +70,18 @@ public class DivideConfigInfo {
     }
 
     public enum STATE {
+        /**
+         * 未配置
+         */
         UN_CONF,
+        /**
+         * 错误配置
+         */
         ERR_CONF,
+        /**
+         * 正确配置
+         */
         CONF;
     }
-
-
 
 }

@@ -23,7 +23,7 @@ import static cn.com.servyou.yypt.opmc.agent.constant.OpmcConfigConstants.CLASS_
  *
  * @author linj
  * @version 1.0
- * @date 2017/7/28
+ *          2017/7/28
  */
 public class HeartBeatReporter implements Runnable {
 

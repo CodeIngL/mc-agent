@@ -14,7 +14,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
  * <p>税友软件集团有限公司</p>
  *
  * @author laihj
- * @date 2018/2/9
+ *         2018/2/9
  */
 public class StrutsWebAspectHelper extends WebAspectHelper {
 

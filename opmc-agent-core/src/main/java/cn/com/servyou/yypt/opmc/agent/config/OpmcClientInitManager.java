@@ -4,7 +4,6 @@ import cn.com.servyou.opmc.agent.conf.context.ApplicationListener;
 import cn.com.servyou.opmc.agent.conf.core.ObjectWrapper;
 import cn.com.servyou.opmc.agent.conf.init.Initializer;
 import cn.com.servyou.opmc.agent.conf.manager.ConfManager;
-import cn.com.servyou.yypt.opmc.agent.data.metrics.MetricsDelegate;
 import cn.com.servyou.yypt.opmc.agent.log.Log;
 import cn.com.servyou.yypt.opmc.agent.log.LogFactory;
 
@@ -14,27 +13,41 @@ import java.util.List;
 import java.util.Map;
 
 import static cn.com.servyou.yypt.opmc.agent.constant.OpmcConfigConstants.CLASS_INTERNAL_CONFIGURATION;
-import static cn.com.servyou.yypt.opmc.agent.constant.OpmcConfigConstants.CLASS_INTERNAL_METRICS_DELEGATE;
 
 /**
  * <p>Description: </p>
  * <p>税友软件集团有限公司</p>
  *
  * @author laihj
- * @date 2018/2/5
+ *         2018/2/5
  */
 public class OpmcClientInitManager {
 
     private static final Log LOGGER = LogFactory.getLog(OpmcClientInitManager.class);
 
+    /**
+     * 系统集配置文件名
+     */
     private static final String SYSTEM_FILE_CONF = "opmcSystem.properties";
 
+    /**
+     * 用户集配置文件名
+     */
     private static final String USER_FILE_CONF = "opmc.properties";
 
+    /**
+     * 类前缀
+     */
     private static final String SYSTEM_CLASS_PREFIX = "opmcSystem.class";
 
+    /**
+     * 类前缀
+     */
     private static final String USER_CLASS_PREFIX = "opmc.user.class";
 
+    /**
+     * 配置管理器
+     */
     private ConfManager confManager = new ConfManager();
 
     /**

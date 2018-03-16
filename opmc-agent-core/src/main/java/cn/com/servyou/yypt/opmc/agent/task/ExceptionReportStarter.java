@@ -3,7 +3,6 @@ package cn.com.servyou.yypt.opmc.agent.task;
 import cn.com.servyou.opmc.agent.conf.annotation.ConfigAnnotation;
 import cn.com.servyou.opmc.agent.conf.context.ApplicationEvent;
 import cn.com.servyou.opmc.agent.conf.context.ApplicationListener;
-import cn.com.servyou.opmc.agent.conf.init.Initializer;
 import cn.com.servyou.yypt.opmc.agent.event.AvailableEvent;
 import cn.com.servyou.yypt.opmc.agent.task.reporter.ExceptionReporter;
 

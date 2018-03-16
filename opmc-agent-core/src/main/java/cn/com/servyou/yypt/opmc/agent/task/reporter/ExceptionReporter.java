@@ -48,13 +48,25 @@ public class ExceptionReporter implements Runnable {
      */
     private static final Long EXCEPTION_CAUGHT_MAP_RECORD_EXPIRE_TIME_MILLS = 30000L;
 
+    /**
+     * 格式化
+     */
     private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
+    /**
+     * 缓存
+     */
     private Map<String, Long> exceptionCaughtMap = new HashMap<String, Long>();
 
+    /**
+     * 配置类
+     */
     @ConfigAnnotation(name = CLASS_INTERNAL_CONFIGURATION)
     private Configuration configuration;
 
+    /**
+     * 注册表
+     */
     @ConfigAnnotation(name = CLASS_INTERNAL_EXCEPTION_HOLDER_REGISTRY)
     private ExceptionHolderRegistry exceptionHolderRegistry;
 

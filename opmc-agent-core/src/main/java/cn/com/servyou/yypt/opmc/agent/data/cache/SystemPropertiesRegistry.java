@@ -19,7 +19,7 @@ import java.util.Properties;
  *
  * @author linj
  * @version 1.0
- * @date 2017/7/18
+ *          2017/7/18
  */
 public class SystemPropertiesRegistry {
 

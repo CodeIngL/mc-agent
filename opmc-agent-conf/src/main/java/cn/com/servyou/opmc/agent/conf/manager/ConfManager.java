@@ -47,6 +47,7 @@ public class ConfManager {
 
     /**
      * 获得内部创建的bean
+     *
      * @param name bean 名称
      * @return bean
      */
@@ -78,11 +79,10 @@ public class ConfManager {
     }
 
     /**
-     *
      * 加载配置
      *
      * @param fileName 配置文件名
-     * @throws RuntimeException
+     * @throws RuntimeException 异常
      */
     public void loadFrameworkConf(String fileName) throws RuntimeException {
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
@@ -145,7 +145,7 @@ public class ConfManager {
     /**
      * 内部信息构建对象依赖
      *
-     * @throws IllegalAccessException
+     * @throws IllegalAccessException 异常
      */
     public void buildSimpleDependency() throws IllegalAccessException {
         for (Map.Entry<String, ObjectWrapper> wrapper : innerObject.entrySet()) {

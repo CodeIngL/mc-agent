@@ -1,6 +1,5 @@
 package cn.com.servyou.yypt.opmc.agent.fetch.weaver.aspect;
 
-import cn.com.servyou.opmc.agent.conf.core.ObjectWrapper;
 import cn.com.servyou.yypt.opmc.agent.config.ConfigurationStateHolder;
 import cn.com.servyou.yypt.opmc.agent.data.metrics.MetricsDelegate;
 import cn.com.servyou.yypt.opmc.agent.data.metrics.MetricsKey;
@@ -25,7 +24,7 @@ import static cn.com.servyou.yypt.opmc.agent.fetch.annotation.getter.AnnotationP
  *
  * @author linj
  * @version 1.0
- * @date 2017/8/15
+ *          2017/8/15
  */
 @Aspect
 public abstract class MonitorByAnnotationAspectWeaver {

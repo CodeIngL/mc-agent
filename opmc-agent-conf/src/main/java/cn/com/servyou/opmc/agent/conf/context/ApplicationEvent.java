@@ -11,6 +11,9 @@ import java.util.EventObject;
  */
 public abstract class ApplicationEvent extends EventObject {
 
+    /**
+     * 事件时间戳
+     */
     private final long timestamp;
 
     public ApplicationEvent(Object source) {
