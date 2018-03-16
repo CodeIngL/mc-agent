@@ -2,6 +2,8 @@ package cn.com.servyou.yypt.opmc.agent.data.exception;
 
 import cn.com.servyou.opmc.agent.conf.annotation.ConfigAnnotation;
 import cn.com.servyou.opmc.agent.conf.init.Initializer;
+import cn.com.servyou.yypt.opmc.agent.log.Log;
+import cn.com.servyou.yypt.opmc.agent.log.LogFactory;
 
 import java.util.concurrent.*;
 
@@ -17,6 +19,8 @@ import static cn.com.servyou.yypt.opmc.agent.constant.OpmcConfigConstants.OPMC_U
  * @version 1.0
  */
 public class ExceptionHolderRegistry implements Initializer {
+
+    private static final Log LOGGER = LogFactory.getLog(ExceptionHolderRegistry.class);
 
     /**
      * 待发送的异常队列的大小,定为1000
@@ -85,6 +89,8 @@ public class ExceptionHolderRegistry implements Initializer {
 
     static class ExceptionTask implements Runnable {
 
+        private static final Log LOGGER = LogFactory.getLog(ExceptionTask.class);
+
         /**
          * 移除
          */
@@ -122,8 +128,11 @@ public class ExceptionHolderRegistry implements Initializer {
                         Thread.sleep(5000);
                         break;
                     case 4:
+                        LOGGER.warn("exception send fail fourth,name is " +
+                                exceptionHolder.getThrowable().getClass().getName());
                         break;
                 }
+                exceptionHolder.setCounts(count + 1);
                 if (count < 4) {
                     queue.offer(exceptionHolder);
                 }

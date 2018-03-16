@@ -147,6 +147,10 @@ public class ConfigurationStateHolder implements ApplicationEventMulticaster {
     }
 
 
+    /**
+     * 注册bean
+     * @param registry 注册表
+     */
     void registryAllBean(Map<String, Object> registry) {
         if (registry == null || registry.size() == 0) {
             return;

@@ -149,6 +149,11 @@ public class ExceptionReporter implements Runnable {
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("The Exception:[" + throwableName + "] has already exists in cache,it will not be put into cache this time.");
             }
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                //ignore
+            }
             return false;
         } else {
             //如果异常并不存在,判断map的大小是否达到超过了预设值,如果达到甚至超过了预设值,则返回false.
