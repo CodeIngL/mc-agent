@@ -74,6 +74,10 @@
             <version>${slf.version}</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-all</artifactId>
+        </dependency>
     </dependencies>
 
 </project>
