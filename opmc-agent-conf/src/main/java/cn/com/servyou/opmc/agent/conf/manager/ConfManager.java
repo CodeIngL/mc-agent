@@ -165,7 +165,22 @@ public class ConfManager {
         if (cycleObject.contains(obj)) {
             throw new RuntimeException("循环引用" + obj.getClass());
         }
-        Field[] fields = obj.getClass().getDeclaredFields();
+        if (obj == null) {
+            return;
+        }
+        setFiled(obj.getClass(), obj, conf);
+        wrapper.setFinishInit(true);
+        cycleObject.remove(obj);
+    }
+
+    private void setFiled(Class cls, Object obj, Map<String, String> conf) throws IllegalAccessException {
+        if ("java.lang.Object".equals(cls.getName())) {
+            return;
+        }
+        if (cls.getName().startsWith("[")) {
+            return;
+        }
+        Field[] fields = cls.getDeclaredFields();
         for (Field field : fields) {
             if (field.isAnnotationPresent(ConfigAnnotation.class)) {
                 if (Modifier.isStatic(field.getModifiers())) {
@@ -190,8 +205,7 @@ public class ConfManager {
                 field.set(obj, valueObj);
             }
         }
-        wrapper.setFinishInit(true);
-        cycleObject.remove(obj);
+        setFiled(cls.getSuperclass(), obj, conf);
     }
 
     /**
@@ -232,5 +246,4 @@ public class ConfManager {
         }
         return null;
     }
-
 }
