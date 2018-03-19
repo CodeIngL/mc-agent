@@ -2,6 +2,7 @@ package cn.com.servyou.yypt.opmc.agent.spring.aspect;
 
 import cn.com.servyou.yypt.opmc.agent.entity.DivideConfigInfo;
 import cn.com.servyou.yypt.opmc.agent.fetch.annotation.getter.AnnotationPropertiesGetter;
+import cn.com.servyou.yypt.opmc.agent.fetch.weaver.aspect.MonitorByAnnotationAspectWeaver;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -10,9 +11,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import java.lang.annotation.Annotation;
 
-import static cn.com.servyou.yypt.opmc.agent.fetch.weaver.aspect.MonitorByAnnotationAspectWeaver.monitorTimer;
+import static cn.com.servyou.yypt.opmc.agent.fetch.annotation.getter.AnnotationPropertiesGetter.*;
+import static cn.com.servyou.yypt.opmc.agent.fetch.annotation.getter.AnnotationPropertiesGetter.MCGAUGE;
 
 /**
  * <p>Function: [功能模块：监控有对应注解的方法内容,针对spring下的类]</p>
@@ -78,8 +79,75 @@ public class MonitorByAnnotationAspect {
      */
     @Around("@annotation(org.springframework.web.bind.annotation.RequestMapping)")
     public Object monitorRequestMapping(ProceedingJoinPoint pjp) throws Throwable {
-        return monitorTimer(pjp, REQUESTMAPPING);
+        return MonitorByAnnotationAspectWeaver.monitorTimer(pjp, REQUESTMAPPING);
     }
+
+
+    /**
+     * 监控MCTimer注解的方法
+     * 此方法会记录被MCTimer注解的目标方法的执行时间 执行次数和QPS信息
+     *
+     * @param pjp 切片
+     * @return Object
+     * @throws Throwable 业务方法本身的异常
+     */
+    @Around("@annotation(cn.com.servyou.yypt.opmc.agent.fetch.annotation.define.MCTimer)")
+    public Object monitorTimer(ProceedingJoinPoint pjp) throws Throwable {
+        return MonitorByAnnotationAspectWeaver.monitorTimer(pjp, MCTIMER);
+    }
+
+    /**
+     * 监控MCMeter注解的方法
+     * 此方法会记录被执行次数
+     *
+     * @param pjp 切片
+     * @return Object
+     * @throws Throwable 业务方法本身的异常
+     */
+    @Around("@annotation(cn.com.servyou.yypt.opmc.agent.fetch.annotation.define.MCMeter)")
+    public Object monitorMeter(ProceedingJoinPoint pjp) throws Throwable {
+        return MonitorByAnnotationAspectWeaver.monitorMeter(pjp, MCMETER);
+    }
+
+    /**
+     * 监控MCCounter注解的方法
+     * 在进入被注解的方法时,Counter会增加,在被注解的方法执行完毕之后,Counter会减少.
+     *
+     * @param pjp 切片
+     * @return Object
+     * @throws Throwable 业务方法本身的异常
+     */
+    @Around("@annotation(cn.com.servyou.yypt.opmc.agent.fetch.annotation.define.MCCounter)")
+    public Object monitorCounter(ProceedingJoinPoint pjp) throws Throwable {
+        return MonitorByAnnotationAspectWeaver.monitorCounter(pjp, MCCOUNTER);
+    }
+
+    /**
+     * 监控MCHistogram注解的方法
+     * 此方法会记录方法执行耗时
+     *
+     * @param pjp 切片
+     * @return Object
+     * @throws Throwable 业务方法本身的异常
+     */
+    @Around("@annotation(cn.com.servyou.yypt.opmc.agent.fetch.annotation.define.MCHistogram)")
+    public java.lang.Object monitorHistogram(ProceedingJoinPoint pjp) throws Throwable {
+        return MonitorByAnnotationAspectWeaver.monitorHistogram(pjp, AnnotationPropertiesGetter.MCHISTOGRAM);
+    }
+
+    /**
+     * 监控MCHistogram注解的方法
+     * 此方法会记录方法执行耗时
+     *
+     * @param pjp 切片
+     * @return Object
+     * @throws Throwable 业务方法本身的异常
+     */
+    @Around("@annotation(cn.com.servyou.yypt.opmc.agent.fetch.annotation.define.MCGauge)")
+    public Object monitorGauge(ProceedingJoinPoint pjp) throws Throwable {
+        return MonitorByAnnotationAspectWeaver.monitorGauge(pjp, MCGAUGE);
+    }
+
 }
 
 
