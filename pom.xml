@@ -30,6 +30,7 @@
         <module>opmc-agent-struts</module>
         <module>opmc-agent-conf</module>
         <module>opmc-agent-core-support</module>
+        <module>opmc-agent-dubbo</module>
     </modules>
 
     <properties>

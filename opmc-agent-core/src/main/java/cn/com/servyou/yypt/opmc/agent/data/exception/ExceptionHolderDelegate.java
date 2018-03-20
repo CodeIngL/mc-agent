@@ -58,6 +58,19 @@ public class ExceptionHolderDelegate {
     }
 
     /**
+     * 放入异常
+     * @param throwable 异常
+     */
+    public void catchExceptionFrom(Throwable throwable) {
+        //如果参数是异常类型的,处理这个异常
+        if (!exceptionMatchedInRule(throwable.getClass().getSimpleName())) {
+            return;
+        }
+        exceptionHolderRegistry.put(new ExceptionHolder(throwable, System.currentTimeMillis()));
+    }
+
+
+    /**
      * 判断异常是否符合include和exclude规则
      *
      * @param exceptionName 异常名
