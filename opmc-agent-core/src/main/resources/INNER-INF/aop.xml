@@ -4,7 +4,7 @@
         <concrete-aspect name="cn.com.servyou.yypt.opmc.agent.fetch.weaver.aspect.OpmcExceptionLog"
                          extends="cn.com.servyou.yypt.opmc.agent.fetch.weaver.aspect.MonitorExceptionInLogAspectWeaver">
             <pointcut name="point"
-                      expression="execution (* error(..,Throwable)) AND !cflow(cn.com.servyou.yypt.opmc.agent.log.Log)"/>
+                      expression="execution (* error(..,Throwable))"/>
         </concrete-aspect>
     </aspects>
     <weaver options="-verbose">
