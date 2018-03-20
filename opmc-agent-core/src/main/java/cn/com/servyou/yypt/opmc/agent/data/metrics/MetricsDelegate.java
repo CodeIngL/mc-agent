@@ -138,7 +138,7 @@ public class MetricsDelegate implements ApplicationListener {
     public Timer.Context getTimerContext(String key) {
         try {
             if (keyRegistry.putKeyToCacheIfNotExist(MCTimer.class.getSimpleName(), key)) {
-                return registry.timer(MBEAN_NAMESPACE + key).time();
+                return registry.timer(MetricRegistry.name(MBEAN_NAMESPACE, key)).time();
             }
         } catch (Exception e) {
             LOGGER.warn("Exception occurred on time a Timer", e);
@@ -170,7 +170,7 @@ public class MetricsDelegate implements ApplicationListener {
     public void updateHistogram(String key, long value) {
         try {
             if (keyRegistry.putKeyToCacheIfNotExist(MCHistogram.class.getSimpleName(), key)) {
-                registry.histogram(MBEAN_NAMESPACE + key, new MetricRegistry.MetricSupplier<Histogram>() {
+                registry.histogram(MetricRegistry.name(MBEAN_NAMESPACE, key), new MetricRegistry.MetricSupplier<Histogram>() {
                     @Override
                     public Histogram newMetric() {
                         return new Histogram(new ExponentiallyDecayingReservoir());
@@ -190,7 +190,7 @@ public class MetricsDelegate implements ApplicationListener {
     public void incCounter(String key) {
         try {
             if (keyRegistry.putKeyToCacheIfNotExist(MCCounter.class.getSimpleName(), key)) {
-                registry.counter(MBEAN_NAMESPACE + key).inc();
+                registry.counter(MetricRegistry.name(MBEAN_NAMESPACE, key)).inc();
             }
         } catch (Exception e) {
             LOGGER.warn("Exception occurred on inc a Counter", e);
@@ -205,7 +205,7 @@ public class MetricsDelegate implements ApplicationListener {
     public void decCounter(String key) {
         try {
             if (keyRegistry.putKeyToCacheIfNotExist(MCCounter.class.getSimpleName(), key)) {
-                registry.counter(MBEAN_NAMESPACE + key).dec();
+                registry.counter(MetricRegistry.name(MBEAN_NAMESPACE, key)).dec();
             }
         } catch (Exception e) {
             LOGGER.warn("Exception occurred on dec a Counter", e);
