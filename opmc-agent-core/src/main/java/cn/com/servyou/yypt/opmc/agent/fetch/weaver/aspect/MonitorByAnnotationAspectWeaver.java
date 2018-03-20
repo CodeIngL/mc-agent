@@ -240,6 +240,9 @@ public abstract class MonitorByAnnotationAspectWeaver {
         try {
             ConfigurationStateHolder stateHolder = ConfigurationStateHolder.getInstance();
             AspectHelper helper = (AspectHelper) stateHolder.getBean(CLASS_INTERNAL_ASPECT_HELPER);
+            if (helper == null){
+                return null;
+            }
             return helper.fetchMetricsKeys(pjp, getter);
         } catch (Throwable throwable) {
             //ignore
