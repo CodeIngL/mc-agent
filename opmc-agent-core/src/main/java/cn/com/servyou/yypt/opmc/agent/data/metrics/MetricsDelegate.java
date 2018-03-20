@@ -30,7 +30,7 @@ public class MetricsDelegate implements ApplicationListener {
     /**
      * 命名空间
      */
-    private static final String MBEAN_NAMESPACE = "servyou.";
+    private static final String MBEAN_NAMESPACE = "servyou";
 
     /**
      * 注册表
