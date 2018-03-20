@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<aspectj>
+    <aspects>
+        <concrete-aspect name="cn.com.servyou.yypt.opmc.agent.fetch.weaver.aspect.OpmcExceptionLog"
+                         extends="cn.com.servyou.yypt.opmc.agent.fetch.weaver.aspect.MonitorExceptionInLogAspectWeaver">
+            <pointcut name="point"
+                      expression="execution (* error(..,Throwable)) AND !cflow(cn.com.servyou.yypt.opmc.agent.log.Log)"/>
+        </concrete-aspect>
+    </aspects>
+    <weaver options="-verbose">
+        <include within="org.slf4j..*"/>
+        <include within="org.apache.log4j..*"/>
+        <include within="org.apache.commons.logging..*"/>
+    </weaver>
+</aspectj>
