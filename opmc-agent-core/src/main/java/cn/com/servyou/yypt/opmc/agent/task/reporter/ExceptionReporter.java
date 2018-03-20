@@ -90,12 +90,12 @@ public class ExceptionReporter implements Runnable {
                     registry.putUpdate(exceptionHolder);
                 }
             } catch (IOException e) {
-                LOGGER.warn("IOException occurred on sending exception info to OPMC server. exception info will be put back to cache and wait several seconds.! ", e);
+                LOGGER.error("IOException occurred on sending exception info to OPMC server. exception info will be put back to cache and wait several seconds.! ", e);
                 registry.putUpdate(exceptionHolder);
             } catch (InterruptedException e) {
-                LOGGER.warn("", e);
+                LOGGER.error("", e);
             } catch (Throwable e) {
-                LOGGER.warn("Exception occurred on sending a exception ! ", e);
+                LOGGER.error("Exception occurred on sending a exception ! ", e);
             }
         }
     }

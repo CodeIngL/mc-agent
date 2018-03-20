@@ -51,7 +51,7 @@ public class SystemPropertiesRegistry {
         try {
             inetAddress = InetAddress.getLocalHost();
         } catch (UnknownHostException e) {
-            LOGGER.warn("", e);
+            LOGGER.error("", e);
         }
     }
 
@@ -92,7 +92,7 @@ public class SystemPropertiesRegistry {
                 }
             }
         } catch (SocketException ex) {
-            LOGGER.warn("", ex);
+            LOGGER.error("", ex);
         }
         return builder.toString();
     }

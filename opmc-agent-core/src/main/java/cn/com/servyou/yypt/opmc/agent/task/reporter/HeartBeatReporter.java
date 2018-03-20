@@ -76,9 +76,9 @@ public class HeartBeatReporter implements Runnable {
                 LOGGER.warn("Heart beat has send, but the result of OPMC server is null!");
             }
         } catch (IOException e) {
-            LOGGER.warn("Can not access OPMC server! ", e);
+            LOGGER.error("Can not access OPMC server! ", e);
         } catch (Throwable throwable) {
-            LOGGER.warn("Exception occurred on sending a heart beat ! ", throwable);
+            LOGGER.error("Exception occurred on sending a heart beat ! ", throwable);
         }
     }
 

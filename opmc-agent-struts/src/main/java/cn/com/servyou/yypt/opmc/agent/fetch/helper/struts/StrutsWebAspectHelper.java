@@ -33,7 +33,7 @@ public class StrutsWebAspectHelper extends WebAspectHelper {
                     //form取值使用反射取值,要求form类有对应的get方法
                     return MethodUtil.invokeGetMethod(form, info.getDivideParamName()).toString();
                 } catch (Exception e) {
-                    LOGGER.warn("Exception occurred on getting filed's value from ActionForm, name of ActionForm is :[" + form.toString() + "], name of filed is :[" + info.getDivideParamName() + "]", e);
+                    LOGGER.error("Exception occurred on getting filed's value from ActionForm, name of ActionForm is :[" + form.toString() + "], name of filed is :[" + info.getDivideParamName() + "]", e);
                 }
                 break;
             default:

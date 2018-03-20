@@ -59,7 +59,7 @@ public abstract class MonitorExceptionInLogAspectWeaver {
             delegate.catchExceptionFromProceedingJoinPoint(pjp);
         } catch (Throwable e) {
             //在插件的其他地方,仍旧可以使用error级别输出,因为那些异常和错误是需要进行异常报告的.
-            LOGGER.warn("Error occurred on aspecting log output to catch exception.", e);
+            LOGGER.error("Error occurred on aspecting log output to catch exception.", e);
         }
         return pjp.proceed();
     }

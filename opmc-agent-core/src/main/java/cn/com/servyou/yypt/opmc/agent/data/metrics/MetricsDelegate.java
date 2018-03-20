@@ -94,7 +94,7 @@ public class MetricsDelegate implements ApplicationListener {
                         return method.invoke(method.getDeclaringClass().newInstance());
                     }
                 } catch (Exception e) {
-                    LOGGER.warn("Binding method to MCGauge failed on key :[" + key + "]", e);
+                    LOGGER.error("Binding method to MCGauge failed on key :[" + key + "]", e);
                 }
                 return null;
             }
@@ -141,7 +141,7 @@ public class MetricsDelegate implements ApplicationListener {
                 return registry.timer(MetricRegistry.name(MBEAN_NAMESPACE, key)).time();
             }
         } catch (Exception e) {
-            LOGGER.warn("Exception occurred on time a Timer", e);
+            LOGGER.error("Exception occurred on time a Timer", e);
         }
         return null;
     }
@@ -157,7 +157,7 @@ public class MetricsDelegate implements ApplicationListener {
                 context.stop();
             }
         } catch (Exception e) {
-            LOGGER.warn("Exception occurred on stop a context", e);
+            LOGGER.error("Exception occurred on stop a context", e);
         }
     }
 
@@ -178,7 +178,7 @@ public class MetricsDelegate implements ApplicationListener {
                 }).update(value);
             }
         } catch (Exception e) {
-            LOGGER.warn("Exception occurred on update a Histogram", e);
+            LOGGER.error("Exception occurred on update a Histogram", e);
         }
     }
 
@@ -193,7 +193,7 @@ public class MetricsDelegate implements ApplicationListener {
                 registry.counter(MetricRegistry.name(MBEAN_NAMESPACE, key)).inc();
             }
         } catch (Exception e) {
-            LOGGER.warn("Exception occurred on inc a Counter", e);
+            LOGGER.error("Exception occurred on inc a Counter", e);
         }
     }
 
@@ -208,7 +208,7 @@ public class MetricsDelegate implements ApplicationListener {
                 registry.counter(MetricRegistry.name(MBEAN_NAMESPACE, key)).dec();
             }
         } catch (Exception e) {
-            LOGGER.warn("Exception occurred on dec a Counter", e);
+            LOGGER.error("Exception occurred on dec a Counter", e);
         }
     }
 
