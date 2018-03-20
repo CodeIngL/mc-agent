@@ -26,12 +26,10 @@ import static cn.com.servyou.yypt.opmc.agent.constant.OpmcConfigConstants.CLASS_
  */
 @Component(value = "opmcSpringClientInitManager")
 @DependsOn(value = "opmcConfiguration")
-public class OpmcSpringClientInitManager implements ApplicationContextAware {
+public class OpmcSpringClientInitManager {
 
     @Autowired
     Configuration configuration;
-
-    private ApplicationContext context;
 
     private OpmcClientInitManager opmcClientInitManager = new OpmcClientInitManager();
 
@@ -57,9 +55,4 @@ public class OpmcSpringClientInitManager implements ApplicationContextAware {
         return;
     }
 
-
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        context = applicationContext;
-    }
 }
