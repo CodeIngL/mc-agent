@@ -32,7 +32,7 @@ public class KeyCacheRegistry {
     /**
      * 缓存，用于快速刷新
      */
-    private HashMap<Method, KeyCache> keyCacheMap = new HashMap<>();
+    private HashMap<Method, KeyCache> keyCacheMap = new HashMap<Method,KeyCache>();
 
     /**
      * 注册键值对
