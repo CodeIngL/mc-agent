@@ -50,7 +50,7 @@ public class OpmcSpringClientInitManager {
         conf.setEnable(configuration.isEnable());
         conf.setAppName(configuration.getAppName());
         conf.getExceptionExcludes().addAll(configuration.getExceptionExcludes());
-        conf.getExceptionIncludes().addAll(configuration.getExceptionExcludes());
+        conf.getExceptionIncludes().addAll(configuration.getExceptionIncludes());
         conf.setServerUrl(configuration.getServerUrl());
         return;
     }
