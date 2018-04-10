@@ -59,6 +59,7 @@ public class ExceptionHolderDelegate {
 
     /**
      * 放入异常
+     *
      * @param throwable 异常
      */
     public void catchExceptionFrom(Throwable throwable) {
@@ -77,7 +78,7 @@ public class ExceptionHolderDelegate {
      * @return
      */
     private boolean exceptionMatchedInRule(String exceptionName) {
-        if (configuration.isEnable()) {
+        if (!configuration.isEnable()) {
             return false;
         }
         //include优先级较高,如果配置了include,那么只有在include里的才符合需求
