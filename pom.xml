@@ -31,6 +31,7 @@
         <module>opmc-agent-conf</module>
         <module>opmc-agent-core-support</module>
         <module>opmc-agent-dubbo</module>
+        <module>opmc-agent-log</module>
     </modules>
 
     <properties>
@@ -56,6 +57,11 @@
             <dependency>
                 <groupId>cn.com.servyou</groupId>
                 <artifactId>opmc-agent-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.com.servyou</groupId>
+                <artifactId>opmc-agent-log</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <!--aspectj runtime-->
