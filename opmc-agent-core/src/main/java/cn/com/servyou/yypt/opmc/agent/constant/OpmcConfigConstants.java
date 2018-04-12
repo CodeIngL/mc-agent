@@ -123,13 +123,6 @@ public class OpmcConfigConstants {
      */
     public static final String OPMC_USER_CONFIG_EXCEPTION_INCLUDES = "opmc.user.config.exceptionIncludes";
 
-
-    /**
-     * 注册排除
-     */
-    public static final String OPMC_USER_CONFIG_EXCEPTION_EXCLUDES = "opmc.user.config.exceptionExcludes";
-
-
     /**
      * 队列大小
      */

@@ -86,10 +86,6 @@ public class ExceptionHolderDelegate {
         if (includes.size() > 0) {
             return includes.contains(exceptionName);
         }
-        Collection<String> excludeList = configuration.getExceptionExcludes();
-        if (excludeList.size() > 0) {
-            return !excludeList.contains(exceptionName);
-        }
         //都没配置的话,通过
         return true;
     }

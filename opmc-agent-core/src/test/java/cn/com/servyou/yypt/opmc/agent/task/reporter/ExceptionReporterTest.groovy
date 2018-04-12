@@ -30,7 +30,6 @@ class ExceptionReporterTest {
         Configuration configuration = new Configuration();
         configuration.appName = "servyou";
         configuration.enable = true;
-        configuration.exceptionExcludes = ["123", "234"];
         configuration.serverUrl = "";
         configuration.exceptionIncludes = ["123", "234"];
         reporter.configuration = configuration;

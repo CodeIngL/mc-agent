@@ -49,9 +49,8 @@ public class OpmcSpringClientInitManager {
     private void copyConfiguration(Configuration conf) {
         conf.setEnable(configuration.isEnable());
         conf.setAppName(configuration.getAppName());
-        conf.getExceptionExcludes().addAll(configuration.getExceptionExcludes());
-        conf.getExceptionIncludes().addAll(configuration.getExceptionIncludes());
         conf.setServerUrl(configuration.getServerUrl());
+        conf.getExceptionIncludes().addAll(configuration.getExceptionIncludes());
         return;
     }
 

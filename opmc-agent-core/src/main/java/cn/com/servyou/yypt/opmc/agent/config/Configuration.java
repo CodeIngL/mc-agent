@@ -45,12 +45,6 @@ public class Configuration {
     @ConfigAnnotation(name = OPMC_USER_CONFIG_EXCEPTION_INCLUDES)
     private Set<String> exceptionIncludes = new HashSet<String>();
 
-    /**
-     * 不需要监测的异常列表
-     */
-    @ConfigAnnotation(name = OPMC_USER_CONFIG_EXCEPTION_EXCLUDES)
-    private Set<String> exceptionExcludes = new HashSet<String>();
-
     //------------------get-----set---------//
 
     public String getServerUrl() {
@@ -75,14 +69,6 @@ public class Configuration {
 
     public void setExceptionIncludes(Set<String> exceptionIncludes) {
         this.exceptionIncludes = exceptionIncludes;
-    }
-
-    public Collection<String> getExceptionExcludes() {
-        return exceptionExcludes;
-    }
-
-    public void setExceptionExcludes(Set<String> exceptionExcludes) {
-        this.exceptionExcludes = exceptionExcludes;
     }
 
     public boolean isEnable() {
