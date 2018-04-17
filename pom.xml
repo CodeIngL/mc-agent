@@ -32,6 +32,7 @@
         <module>opmc-agent-core-support</module>
         <module>opmc-agent-dubbo</module>
         <module>opmc-agent-log</module>
+        <module>opmc-agent-reporter</module>
     </modules>
 
     <properties>
