@@ -1,5 +1,6 @@
 package cn.com.servyou.yypt.opmc.agent.reporter;
 
+import cn.com.servyou.opmc.agent.conf.annotation.ConfigAnnotation;
 import cn.com.servyou.opmc.agent.conf.context.ApplicationEvent;
 import cn.com.servyou.opmc.agent.conf.context.ApplicationListener;
 import cn.com.servyou.yypt.opmc.agent.config.ConfigurationStateHolder;
@@ -24,6 +25,9 @@ public class ConsoleMetricsReporter implements ApplicationListener {
 
     private ConsoleReporter consoleReporter;
 
+    @ConfigAnnotation(name = ReporterConstant.OPMC_USER_METRICS_CONSOLE_REPORTER_PERIOD)
+    private int consolePeriod = 30;
+
     @Override
     public void onApplicationEvent(ApplicationEvent event) {
         if (event instanceof AvailableEvent) {
@@ -38,6 +42,9 @@ public class ConsoleMetricsReporter implements ApplicationListener {
                 .forRegistry(metricsDelegate.getRegistry())
                 .filter(MetricFilter.ALL)
                 .build();
-        consoleReporter.start(30, TimeUnit.SECONDS);
+        if (consolePeriod < 0) {
+            consolePeriod = 30;
+        }
+        consoleReporter.start(consolePeriod, TimeUnit.SECONDS);
     }
 }

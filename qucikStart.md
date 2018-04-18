@@ -36,7 +36,7 @@ opmc-agent主要有以下功能
 		-Dcom.sun.management.jmxremote.port=18090
 		-Dcom.sun.management.jmxremote.ssl=false
 		-Dcom.sun.management.jmxremote.authenticate=false
-		-Djava.rmi.server.hostname=10.200.100.3
+		-Djava.rmi.server.hostname=${本机ip}
 
 **`${aspectjweaver-1.8.9.jar}`**
 - 该jar的**路径**，以便JVM能够找到该jar。
