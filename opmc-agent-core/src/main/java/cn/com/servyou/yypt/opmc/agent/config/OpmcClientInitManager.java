@@ -6,6 +6,7 @@ import cn.com.servyou.opmc.agent.conf.init.Initializer;
 import cn.com.servyou.opmc.agent.conf.manager.ConfManager;
 import cn.com.servyou.yypt.opmc.agent.log.Log;
 import cn.com.servyou.yypt.opmc.agent.log.LogFactory;
+import cn.com.servyou.yypt.opmc.agent.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -112,7 +113,9 @@ public class OpmcClientInitManager {
         for (Map.Entry<String, String> entry : conf.entrySet()) {
             String key = entry.getKey();
             if (key.startsWith(SYSTEM_CLASS_PREFIX) || key.startsWith(USER_CLASS_PREFIX)) {
-                confManager.putBean(entry.getKey(), Class.forName(entry.getValue()));
+                if (StringUtils.isNotEmpty(entry.getValue())) {
+                    confManager.putBean(entry.getKey(), Class.forName(entry.getValue()));
+                }
             }
         }
     }
