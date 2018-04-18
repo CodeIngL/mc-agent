@@ -193,34 +193,34 @@ opmc-agent主要有以下功能
 
 1. 配置bean.xml
 
-	<!--已有此配置,忽略此项-->
-	<aop:aspectj-autoproxy proxy-target-class="true"/>
-	<!--已有此配置,忽略此项-->
-	<mvc:annotation-driven/>
-    <!--扫描opmc-spring模块-->
-	<context:component-scan base-package="cn.com.servyou.yypt.opmc.agent.spring"/>
-	<!--配置类-->
-	<bean id="opmcConfiguration" class="cn.com.servyou.yypt.opmc.agent.config.Configuration">
-	    <!--必须参数:是否启用-->
-		<property name="enabled" value="true"/>
-	    <!--必须参数:服务端的地址-->
-	    <!--opmc生产地址为: http://opmc.dc.servyou-it.com:8001/opmc-web  -->
-	    <property name="serverUrl" value="http://opmc.sit.91lyd.com/opmc-web"/>
-	    <!--可选参数:应用名-->
-	    <property name="${appName}" value="theTest"></property>
-	    <!--可选参数:需要监测异常,ie:DataException-->
-	    <!-- <property name="exceptionInclude" value=""/> -->
-	</bean>
+		<!--已有此配置,忽略此项-->
+		<aop:aspectj-autoproxy proxy-target-class="true"/>
+		<!--已有此配置,忽略此项-->
+		<mvc:annotation-driven/>
+	    <!--扫描opmc-spring模块-->
+		<context:component-scan base-package="cn.com.servyou.yypt.opmc.agent.spring"/>
+		<!--配置类-->
+		<bean id="opmcConfiguration" class="cn.com.servyou.yypt.opmc.agent.config.Configuration">
+		    <!--必须参数:是否启用-->
+			<property name="enabled" value="true"/>
+		    <!--必须参数:服务端的地址-->
+		    <!--opmc生产地址为: http://opmc.dc.servyou-it.com:8001/opmc-web  -->
+		    <property name="serverUrl" value="http://opmc.sit.91lyd.com/opmc-web"/>
+		    <!--可选参数:应用名-->
+		    <property name="${appName}" value="theTest"></property>
+		    <!--可选参数:需要监测异常,ie:DataException-->
+		    <!-- <property name="exceptionInclude" value=""/> -->
+		</bean>
 
-	//Metrics配置项:
-    <metrics:metric-registry name="metricRegistry" id="metricRegistry"/>
-    <metrics:health-check-registry id="health"/>
-    <metrics:annotation-driven metric-registry="metricRegistry"/>
-    <metrics:reporter type="jmx" id="metricJmxReporter" metric-registry="metricRegistry"/>
-    <!-- <metrics:reporter metric-registry="metricRegistry" id="metricConsoleReporter" type="console" period="1m"/> -->
+		//Metrics配置项:
+	    <metrics:metric-registry name="metricRegistry" id="metricRegistry"/>
+	    <metrics:health-check-registry id="health"/>
+	    <metrics:annotation-driven metric-registry="metricRegistry"/>
+	    <metrics:reporter type="jmx" id="metricJmxReporter" metric-registry="metricRegistry"/>
+	    <!-- <metrics:reporter metric-registry="metricRegistry" id="metricConsoleReporter" type="console" period="1m"/> -->
 
 
-- `exceptionInclude`默认为`Throwable`和`Exception`,有其他需要则请配置
+	- `exceptionInclude`默认为`Throwable`和`Exception`,有其他需要则请配置
 
 
 2. 在resource下创建文件
