@@ -175,7 +175,7 @@ opmc-agent主要有以下功能
 
 6. 配置日志文件
 
-		log4j.logger.cn.com.servyou.opmc.agent=debug,opmcRollingFile #如果需要opmc的日志输出,将opmc包的日志级别保持为debug
+		log4j.logger.cn.com.servyou.yypt.opmc.agent=debug,opmcRollingFile #如果需要opmc的日志输出,将opmc包的日志级别保持为debug
 		log4j.appender.opmcRollingFile=org.apache.log4j.RollingFileAppender
 		log4j.appender.opmcRollingFile.File=/Users/linj/Documents/logs/opmc.log #文件存放路径，请更改为实际存放路径
 		log4j.appender.opmcRollingFile.MaxFileSize=20MB
@@ -184,7 +184,7 @@ opmc-agent主要有以下功能
 		log4j.appender.opmcRollingFile.Append=true
 		log4j.appender.opmcRollingFile.layout=org.apache.log4j.PatternLayout
 		log4j.appender.opmcRollingFile.layout.ConversionPattern=%d [%-5p] [%t] %c - %m(traceId=%X{traceId})%n
-		log4j.additivity.cn.com.servyou.opmc.agent=false
+		log4j.additivity.cn.com.servyou.yypt.opmc.agent=false
 
 
 
