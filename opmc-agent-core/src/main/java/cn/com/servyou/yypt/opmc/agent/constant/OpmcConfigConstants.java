@@ -134,10 +134,4 @@ public class OpmcConfigConstants {
      */
     public static final String OPMC_USER_KEY_CACHE_REGISTRY_EXPIRE_TIME = "opmc.user.keyCache.registry.expire.time";
 
-
-    /**
-     * 最大大小
-     */
-    public static final String OPMC_USER_KEY_CACHE_REGISTRY_MAX_SIZE = "opmc.user.keyCache.registry.maxSize";
-
 }

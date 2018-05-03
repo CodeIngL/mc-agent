@@ -35,7 +35,6 @@ class OpmcClientInitManagerTest {
         int clsKvSize = manager.confManager.innerObject.size();
         println("all class kv count is " + clsKvSize);
         Assert.assertTrue("successful", (clsKvSize == 2));
-        conf.put("opmc.user.keyCache.registry.maxSize", "10000");
         clsKvSize = manager.confManager.innerObject.size();
         Assert.assertTrue("successful", (clsKvSize == 2));
     }

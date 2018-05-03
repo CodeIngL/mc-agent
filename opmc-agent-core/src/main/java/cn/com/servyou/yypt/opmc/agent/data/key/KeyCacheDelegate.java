@@ -2,7 +2,6 @@ package cn.com.servyou.yypt.opmc.agent.data.key;
 
 import cn.com.servyou.opmc.agent.conf.annotation.ConfigAnnotation;
 import cn.com.servyou.yypt.opmc.agent.constant.OpmcConfigConstants;
-import cn.com.servyou.yypt.opmc.agent.fetch.annotation.getter.AnnotationPropertiesGetter;
 import cn.com.servyou.yypt.opmc.agent.log.Log;
 import cn.com.servyou.yypt.opmc.agent.log.LogFactory;
 
@@ -34,16 +33,16 @@ public class KeyCacheDelegate {
      * @param method
      * @return
      */
-    public KeyCache takeKeyCache(Method method, AnnotationPropertiesGetter getter) {
-        return keyCacheRegistry.get(method, getter.getAnnotation().getSimpleName());
+    public KeyCache takeKeyCache(Method method, String type) {
+        return keyCacheRegistry.get(method, type);
     }
 
     /**
      * @param method
      * @param keyCache
      */
-    public void registerKeyCache(Method method, AnnotationPropertiesGetter getter, KeyCache keyCache) {
-        keyCacheRegistry.registerKeyCache(method, getter.getAnnotation().getSimpleName(), keyCache);
+    public void registerKeyCache(Method method, String type, KeyCache keyCache) {
+        keyCacheRegistry.registerKeyCache(method, type, keyCache);
     }
 
     /**

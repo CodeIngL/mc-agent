@@ -19,12 +19,6 @@ import java.util.Map;
 public class KeyCacheRegistry {
 
     /**
-     * 最大容量
-     */
-    @ConfigAnnotation(name = OpmcConfigConstants.OPMC_USER_KEY_CACHE_REGISTRY_MAX_SIZE)
-    private Integer maxSize = Integer.MAX_VALUE;
-
-    /**
      * 过期时间
      */
     @ConfigAnnotation(name = OpmcConfigConstants.OPMC_USER_KEY_CACHE_REGISTRY_EXPIRE_TIME)
@@ -44,9 +38,6 @@ public class KeyCacheRegistry {
      */
     public void registerKeyCache(Method method, String type, KeyCache keyCache) {
         if (method == null || keyCache == null || type == null) {
-            return;
-        }
-        if (keyCacheMap.size() > maxSize) {
             return;
         }
         if (keyCacheMap.size() >= 500) {
@@ -77,14 +68,6 @@ public class KeyCacheRegistry {
     }
 
     //-------get--------set方法
-
-    public Integer getMaxSize() {
-        return maxSize;
-    }
-
-    public void setMaxSize(Integer maxSize) {
-        this.maxSize = maxSize;
-    }
 
     public Long getExpireTime() {
         return expireTime;
