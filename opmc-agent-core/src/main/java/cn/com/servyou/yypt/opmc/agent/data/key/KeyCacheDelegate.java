@@ -2,7 +2,9 @@ package cn.com.servyou.yypt.opmc.agent.data.key;
 
 import cn.com.servyou.opmc.agent.conf.annotation.ConfigAnnotation;
 import cn.com.servyou.yypt.opmc.agent.constant.OpmcConfigConstants;
-import cn.com.servyou.yypt.opmc.agent.entity.DivideConfigInfo;
+import cn.com.servyou.yypt.opmc.agent.fetch.annotation.getter.AnnotationPropertiesGetter;
+import cn.com.servyou.yypt.opmc.agent.log.Log;
+import cn.com.servyou.yypt.opmc.agent.log.LogFactory;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -19,91 +21,69 @@ import java.util.Set;
  */
 public class KeyCacheDelegate {
 
+    private static final Log LOGGER = LogFactory.getLog(KeyCacheDelegate.class);
+
     @ConfigAnnotation(name = OpmcConfigConstants.CLASS_INTERNAL_KEY_CACHE_REGISTRY)
     private KeyCacheRegistry keyCacheRegistry = new KeyCacheRegistry();
 
-    /**
-     * 注册缓存。todo
-     *
-     * @param staticKey
-     * @param method
-     * @param divideConfigInfo
-     */
-    public void registerKeyCache(String staticKey, Method method, DivideConfigInfo divideConfigInfo) {
-        if (staticKey == null || "".equals(staticKey.trim())) {
-            return;
-        }
-        if (method == null) {
-            return;
-        }
-        KeyCache keyCacheInfo = new KeyCache();
-        keyCacheInfo.setStaticKey(staticKey);
-        keyCacheInfo.setConfigIno(divideConfigInfo);
-        if (divideConfigInfo != null &&
-                divideConfigInfo.getDivideParamGetType() != null &&
-                divideConfigInfo.getDivideParamGetType().length > 0) {
-            keyCacheInfo.setHasDynamicKey(true);
-        }
-        keyCacheRegistry.registerKeyCache(method, keyCacheInfo);
-    }
+    private int count = -2;
+    private int preCount = -1;
+
 
     /**
      * @param method
      * @return
      */
-    public KeyCache takeKeyCache(Method method) {
-        return keyCacheRegistry.get(method);
+    public KeyCache takeKeyCache(Method method, AnnotationPropertiesGetter getter) {
+        return keyCacheRegistry.get(method, getter.getAnnotation().getSimpleName());
     }
-
-    /**
-     * 注册缓存。todo
-     *
-     * @param staticKey
-     * @param method
-     */
-    public void registerKeyCache(String staticKey, Method method) {
-        if (staticKey == null || "".equals(staticKey.trim())) {
-            return;
-        }
-        if (method == null) {
-            return;
-        }
-        HashMap<Method, KeyCache> keyCacheInfoHashMap = keyCacheRegistry.getKeyCacheMap();
-        if (keyCacheInfoHashMap.containsKey(method)) {
-            return;
-        }
-        KeyCache keyCacheInfo = new KeyCache();
-        keyCacheInfo.setStaticKey(staticKey);
-    }
-
 
     /**
      * @param method
      * @param keyCache
      */
-    public void registerKeyCache(Method method, KeyCache keyCache) {
-        keyCacheRegistry.registerKeyCache(method, keyCache);
+    public void registerKeyCache(Method method, AnnotationPropertiesGetter getter, KeyCache keyCache) {
+        keyCacheRegistry.registerKeyCache(method, getter.getAnnotation().getSimpleName(), keyCache);
     }
 
     /**
      * 清楚消息
      */
     public void clear() {
-        HashMap<Method, KeyCache> keyCacheMap = keyCacheRegistry.getKeyCacheMap();
-        Set<Method> methods = new HashSet<Method>();
-        for (Map.Entry<Method, KeyCache> entry : keyCacheMap.entrySet()) {
-            KeyCache keyCache = entry.getValue();
-            if (keyCache == null) {
-                continue;
-            }
-            if (System.currentTimeMillis() - keyCacheRegistry.getExpireTime() > keyCache.getTimestamp()) {
-                methods.add(entry.getKey());
-            }
+        HashMap<Method, Map<String, KeyCache>> keyCacheMap = keyCacheRegistry.getKeyCacheMap();
+        if (keyCacheMap.size() < 500) {
+            return;
         }
-        for (Method method : methods) {
-            keyCacheMap.remove(method);
+        if (preCount == keyCacheMap.size()) {
+            count++;
         }
-        methods.clear();
-
+        preCount = keyCacheMap.size();
+        if (count != 0) {
+            return;
+        }
+        try {
+            Set<Method> methods = new HashSet<Method>();
+            for (Map.Entry<Method, Map<String, KeyCache>> entry : keyCacheMap.entrySet()) {
+                Map<String, KeyCache> keyCacheHolder = entry.getValue();
+                if (keyCacheHolder == null) {
+                    continue;
+                }
+                for (Map.Entry<String,KeyCache> keyCacheEntry: keyCacheHolder.entrySet()) {
+                    KeyCache keyCache = keyCacheEntry.getValue();
+                    if (System.currentTimeMillis() - keyCacheRegistry.getExpireTime() > keyCache.getTimestamp()) {
+                        methods.add(entry.getKey());
+                    }
+                }
+            }
+            for (Method method : methods) {
+                keyCacheMap.remove(method);
+            }
+            methods.clear();
+        } catch (Exception e) {
+            LOGGER.error("corruent happen error, try next", e);
+        } finally {
+            count = -2;
+            preCount = -1;
+        }
     }
 }

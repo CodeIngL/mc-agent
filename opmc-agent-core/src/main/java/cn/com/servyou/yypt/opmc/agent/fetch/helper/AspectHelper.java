@@ -72,7 +72,7 @@ public class AspectHelper {
         String nameSpace = getter.getAnnotation().getSimpleName();
         //获取注册方法
         Method method = MethodUtil.getSignatureMethod(pjp);
-        KeyCache keyCache = keyCacheDelegate.takeKeyCache(method);
+        KeyCache keyCache = keyCacheDelegate.takeKeyCache(method, getter);
 
         //尝试从缓存中获得数据
         if (keyCache != null) {
@@ -121,7 +121,7 @@ public class AspectHelper {
             case UN_CONF:
                 hasDynamicKey = false;
         }
-        keyCacheDelegate.registerKeyCache(outMethod, keyCache);
+        keyCacheDelegate.registerKeyCache(outMethod, getter, keyCache);
         keyCache.setHasDynamicKey(hasDynamicKey);
         if (!hasDynamicKey) {
             return new MetricsKey(staticKey, null);

@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * <p>Description: </p>
@@ -32,40 +33,47 @@ public class KeyCacheRegistry {
     /**
      * 缓存，用于快速刷新
      */
-    private HashMap<Method, KeyCache> keyCacheMap = new HashMap<Method,KeyCache>();
+    private HashMap<Method, Map<String, KeyCache>> keyCacheMap = new HashMap<Method, Map<String, KeyCache>>(1024);
 
     /**
      * 注册键值对
-     * @param method 键
+     *
+     * @param method   键
+     * @param type     类型
      * @param keyCache 值
      */
-    public void registerKeyCache(Method method, KeyCache keyCache) {
-        if (method == null || keyCache == null) {
-            return;
-        }
-        if (keyCacheMap.containsKey(method)) {
+    public void registerKeyCache(Method method, String type, KeyCache keyCache) {
+        if (method == null || keyCache == null || type == null) {
             return;
         }
         if (keyCacheMap.size() > maxSize) {
             return;
         }
-        keyCacheMap.put(method, keyCache);
-    }
-
-    /**
-     * @param method 方法
-     * @return 被删除的KeyCache
-     */
-    public KeyCache remove(Method method) {
-        return keyCacheMap.remove(method);
+        if (keyCacheMap.size() >= 500) {
+            return;
+        }
+        //这里并发是没有问题的，总是不存在引用链，也就是说总是可标记的
+        Map<String, KeyCache> keyCacheHolder = keyCacheMap.get(method);
+        if (keyCacheHolder == null) {
+            keyCacheHolder = new HashMap<String, KeyCache>();
+            keyCacheMap.put(method, keyCacheHolder);
+        }
+        if (keyCacheHolder.containsKey(type)) {
+            return;
+        }
+        keyCacheHolder.put(type, keyCache);
     }
 
     /**
      * @param method 方法
      * @return 对应的KeyCache
      */
-    public KeyCache get(Method method) {
-        return keyCacheMap.get(method);
+    public KeyCache get(Method method, String type) {
+        Map<String, KeyCache> keyCacheHolder = keyCacheMap.get(method);
+        if (keyCacheHolder == null) {
+            return null;
+        }
+        return keyCacheHolder.get(type);
     }
 
     //-------get--------set方法
@@ -86,13 +94,11 @@ public class KeyCacheRegistry {
         this.expireTime = expireTime;
     }
 
-    public HashMap<Method, KeyCache> getKeyCacheMap() {
+    public HashMap<Method, Map<String, KeyCache>> getKeyCacheMap() {
         return keyCacheMap;
     }
 
-    public void setKeyCacheMap(HashMap<Method, KeyCache> keyCacheMap) {
+    public void setKeyCacheMap(HashMap<Method, Map<String, KeyCache>> keyCacheMap) {
         this.keyCacheMap = keyCacheMap;
     }
-
-
 }
