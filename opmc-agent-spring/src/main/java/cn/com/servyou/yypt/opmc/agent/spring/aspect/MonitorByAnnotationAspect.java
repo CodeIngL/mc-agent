@@ -40,7 +40,7 @@ public class MonitorByAnnotationAspect {
             //RequestMapping类型的value值是以value值+分隔符+RequestMethod的name值(如空则取常量默认值)作为返回的value
             //RequestMapping的value是一个数组,这里只取第一个值作为key的开头
             String[] values = requestMapping.value();
-            if (values == null || values.length == 0) {
+            if (values.length == 0) {
                 return null;
             }
             //取value的第一个值作为开头.
