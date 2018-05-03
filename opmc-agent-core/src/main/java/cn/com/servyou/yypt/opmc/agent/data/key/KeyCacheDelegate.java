@@ -69,8 +69,12 @@ public class KeyCacheDelegate {
                 }
                 for (Map.Entry<String,KeyCache> keyCacheEntry: keyCacheHolder.entrySet()) {
                     KeyCache keyCache = keyCacheEntry.getValue();
+                    if (keyCache == null){
+                        continue;
+                    }
                     if (System.currentTimeMillis() - keyCacheRegistry.getExpireTime() > keyCache.getTimestamp()) {
                         methods.add(entry.getKey());
+                        break;
                     }
                 }
             }
