@@ -33,23 +33,23 @@ public class KeyCacheDelegate {
      * @param method
      * @return
      */
-    public KeyCache takeKeyCache(Method method, String type) {
-        return keyCacheRegistry.get(method, type);
+    public KeyCache takeKeyCache(Method method) {
+        return keyCacheRegistry.get(method);
     }
 
     /**
      * @param method
      * @param keyCache
      */
-    public void registerKeyCache(Method method, String type, KeyCache keyCache) {
-        keyCacheRegistry.registerKeyCache(method, type, keyCache);
+    public void registerKeyCache(Method method, KeyCache keyCache) {
+        keyCacheRegistry.registerKeyCache(method, keyCache);
     }
 
     /**
      * 清楚消息
      */
     public void clear() {
-        HashMap<Method, Map<String, KeyCache>> keyCacheMap = keyCacheRegistry.getKeyCacheMap();
+        HashMap<Method, KeyCache> keyCacheMap = keyCacheRegistry.getKeyCacheMap();
         if (keyCacheMap.size() < 500) {
             return;
         }
@@ -62,20 +62,14 @@ public class KeyCacheDelegate {
         }
         try {
             Set<Method> methods = new HashSet<Method>();
-            for (Map.Entry<Method, Map<String, KeyCache>> entry : keyCacheMap.entrySet()) {
-                Map<String, KeyCache> keyCacheHolder = entry.getValue();
-                if (keyCacheHolder == null) {
+            for (Map.Entry<Method, KeyCache> entry : keyCacheMap.entrySet()) {
+                KeyCache keyCache = entry.getValue();
+                if (keyCache == null) {
                     continue;
                 }
-                for (Map.Entry<String,KeyCache> keyCacheEntry: keyCacheHolder.entrySet()) {
-                    KeyCache keyCache = keyCacheEntry.getValue();
-                    if (keyCache == null){
-                        continue;
-                    }
-                    if (System.currentTimeMillis() - keyCacheRegistry.getExpireTime() > keyCache.getTimestamp()) {
-                        methods.add(entry.getKey());
-                        break;
-                    }
+                if (System.currentTimeMillis() - keyCacheRegistry.getExpireTime() > keyCache.getTimestamp()) {
+                    methods.add(entry.getKey());
+                    break;
                 }
             }
             for (Method method : methods) {

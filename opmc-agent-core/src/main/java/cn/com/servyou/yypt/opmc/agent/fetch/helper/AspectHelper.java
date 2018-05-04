@@ -72,11 +72,11 @@ public class AspectHelper {
         String nameSpace = getter.getAnnotation().getSimpleName();
         //获取注册方法
         Method method = MethodUtil.getSignatureMethod(pjp);
-        KeyCache keyCache = keyCacheDelegate.takeKeyCache(method, getter.getAnnotation().getSimpleName());
+        KeyCache keyCache = keyCacheDelegate.takeKeyCache(method);
 
         //尝试从缓存中获得数据
         if (keyCache != null) {
-            String staticKey = keyCache.getStaticKey();
+            String staticKey = MessageFormat.format(keyCache.getStaticKey(), nameSpace);
             if (keyCache.isHasDynamicKey()) {
                 DivideConfigInfo divideConfigInfo = keyCache.getConfigIno();
                 String divideParamValue = getArgStringByDivideParam(pjp, divideConfigInfo);
@@ -100,10 +100,11 @@ public class AspectHelper {
         if (StringUtils.isEmpty(value)) {
             value = pjp.getSignature().getName();
         }
-        String staticKey = MessageFormat.format(KEY_PATTEN, nameSpace, pjp.getTarget().getClass().getSimpleName(), value);
+        String staticKey = MessageFormat.format(KEY_PATTEN, "{0}", pjp.getTarget().getClass().getSimpleName(), value);
 
         keyCache = new KeyCache();
         keyCache.setStaticKey(staticKey);
+        staticKey = MessageFormat.format(staticKey, nameSpace);
 
 
         //如果方法的注解有配置divideParamName属性, 说明该方法开启了按参数明细动态统计.
@@ -121,7 +122,7 @@ public class AspectHelper {
             case UN_CONF:
                 hasDynamicKey = false;
         }
-        keyCacheDelegate.registerKeyCache(outMethod, getter.getAnnotation().getSimpleName(), keyCache);
+        keyCacheDelegate.registerKeyCache(outMethod, keyCache);
         keyCache.setHasDynamicKey(hasDynamicKey);
         if (!hasDynamicKey) {
             return new MetricsKey(staticKey, null);
