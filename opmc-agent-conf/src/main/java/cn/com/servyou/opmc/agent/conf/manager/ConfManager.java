@@ -74,7 +74,7 @@ public class ConfManager {
         } catch (InstantiationException e) {
             //ignore
         } catch (IllegalAccessException e) {
-            throw new RuntimeException("不可访问" + cls.getName());
+            throw new RuntimeException("can't access" + cls.getName());
         }
     }
 
@@ -105,7 +105,7 @@ public class ConfManager {
                 loadConfFromURL(localURL);
             }
         } catch (IOException e) {
-            throw new RuntimeException("不是一个合法的URL" + fileName);
+            throw new RuntimeException("it isn't a legally URL:" + fileName);
         }
     }
 
@@ -135,8 +135,8 @@ public class ConfManager {
                 try {
                     in.close();
                 } catch (IOException e) {
-                    log.error("什么都不知道", e);
-                    throw new RuntimeException(url.toString() + "配置文件有误");
+                    log.error("did nothing ", e);
+                    throw new RuntimeException(url.toString() + "is a mistake for config");
                 }
             }
         }
@@ -163,7 +163,7 @@ public class ConfManager {
     private void buildSimpleDependency(ObjectWrapper wrapper, Map<String, String> conf) throws IllegalAccessException {
         Object obj = wrapper.getObject();
         if (cycleObject.contains(obj)) {
-            throw new RuntimeException("循环引用" + obj.getClass());
+            throw new RuntimeException("circular reference" + obj.getClass());
         }
         if (obj == null) {
             return;
@@ -200,7 +200,7 @@ public class ConfManager {
                 //assume list is ArrayList<String>
                 Object valueObj = convertString(value, field.getType());
                 if (valueObj == null) {
-                    throw new RuntimeException("配置文件不对" + "key:" + name + "\tvalue:" + value + "\t类:" + obj.toString() + "\t属性:" + field.getName());
+                    throw new RuntimeException("config file is not correct." + "key:" + name + "\tvalue:" + value + "\tclass:" + obj.toString() + "\tproperties:" + field.getName());
                 }
                 field.set(obj, valueObj);
             }
