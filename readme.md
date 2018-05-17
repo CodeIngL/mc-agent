@@ -202,17 +202,17 @@ opmc-agent主要有以下功能
 		<!--配置类-->
 		<bean id="opmcConfiguration" class="cn.com.servyou.yypt.opmc.agent.config.Configuration">
 		    <!--必须参数:是否启用-->
-			<property name="enabled" value="true"/>
+			<property name="enable" value="true"/>
 		    <!--必须参数:服务端的地址-->
 		    <!--opmc生产地址为: http://opmc.dc.servyou-it.com:8001/opmc-web  -->
 		    <property name="serverUrl" value="http://opmc.sit.91lyd.com/opmc-web"/>
 		    <!--可选参数:应用名-->
-		    <property name="${appName}" value="theTest"></property>
+		    <property name="appName" value="xxxxx"></property>
 		    <!--可选参数:需要监测异常,ie:DataException-->
 		    <!-- <property name="exceptionInclude" value=""/> -->
 		</bean>
 
-		//Metrics配置项:
+        <!--Metrics配置项-->
 	    <metrics:metric-registry name="metricRegistry" id="metricRegistry"/>
 	    <metrics:health-check-registry id="health"/>
 	    <metrics:annotation-driven metric-registry="metricRegistry"/>
@@ -361,11 +361,7 @@ params对应注解方法的参数数组，例子见**FirstInputParamParser**实�
 
 * 插件无效
 
-检查配置文件的`enabled`选项，是否配置为`true`
-
-* 方法上加了注解，监控统计却没有生效
-
-检查插件配置文件的`basePackage`选项，是否有包含方法所在类。
+检查配置文件的`enable`选项，是否配置为`true`
 
 * 无法抓取Controller层的异常
 
