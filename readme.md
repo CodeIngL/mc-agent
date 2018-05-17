@@ -53,15 +53,13 @@ opmc-agent主要有以下功能
 
 ## 第二步:选择合适依赖
 
-**pom依赖**:
-
         <dependency>
             <groupId>cn.com.servyou</groupId>
             <artifactId>opmc-agent-log</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
 
-上述模块提供**log异常**抓取功能.
+**log异常**抓取功能
 
         <dependency>
             <groupId>cn.com.servyou</groupId>
@@ -69,7 +67,7 @@ opmc-agent主要有以下功能
             <version>1.0-SNAPSHOT</version>
         </dependency>
 
-上述模块提供**dubbo异常**抓取功能.
+**dubbo异常**抓取功能
 
 
         <dependency>
@@ -78,7 +76,7 @@ opmc-agent主要有以下功能
             <version>1.0-SNAPSHOT</version>
         </dependency>
 
-上述模块提供spring环境下的其他功能.选择上面的组合实现的你的需求
+**spring**功能
 
 
 ## 第三步:集成
@@ -97,7 +95,7 @@ opmc-agent主要有以下功能
             <artifactId>opmc-agent-reporter</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
-	该模块提供了向外暴露度量信息的功能，比如jmx
+	提供暴露度量信息的功能，比如jmx,console
 
 
         <dependency>
@@ -105,48 +103,43 @@ opmc-agent主要有以下功能
     		<artifactId>opmc-agent-core-support</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
-	该模块提供了web下从HttpServletRequest获取参数的能力
+	提供从HttpServletRequest获取参数的能力
 
         <dependency>
             <groupId>cn.com.servyou</groupId>
     		<artifactId>opmc-agent-struts</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
-	该模块提供了struts从actionForm获取参数的能力(当然该模块显然是支持opmc-agent-core-support的)
+	提供struts从actionForm获取参数的能力
 
 
+2. 在resource下创建文件并配置内容
+	- **opmc.properties**
 
-2. 在resource下创建文件
-	- opmc.properties
-	- opmcSystem.properties
+            ##应用名
+            opmc.user.config.appName=xxx
+            ##心跳地址
+            opmc.user.config.serverUrl=xxx
+            ##是否开启opmc
+            opmc.user.config.enable=false
+            ##抓取的异常类型
+            opmc.user.config.exceptionIncludes=Throwable,Exception
+            ##如果你选择了<artifactId>opmc-agent-reporter</artifactId>，并且想在控制台展示，且要自定义时间
+            opmc.user.metrics.console.reporter.period=30
+	- **opmcSystem.properties**
 
-3. 配置opmc.properties文件
+            ##如果你选择了<artifactId>opmc-agent-core-support</artifactId>
+            opmcSystem.class.internalAspectHelper=cn.com.servyou.yypt.opmc.agent.fetch.helper.web.WebAspectHelper
+            ##如果你选择了<artifactId>opmc-agent-agent-struts</artifactId>
+            opmcSystem.class.internalAspectHelper=cn.com.servyou.yypt.opmc.agent.fetch.helper.struts.StrutsWebAspectHelper
 
-		##应用名
-		opmc.user.config.appName=xxx
-		##心跳地址
-		opmc.user.config.serverUrl=xxx
-		##是否开启opmc
-		opmc.user.config.enable=false
-		##抓取的异常类型
-		opmc.user.config.exceptionIncludes=Throwable,Exception
-		##如果你选择了<artifactId>opmc-agent-reporter</artifactId>，并且想在控制台展示，且要自定义时间
-		opmc.user.metrics.console.reporter.period=30
+            ##如果你选择了<artifactId>opmc-agent-reporter</artifactId>，并且想在控制台展示
+            opmcSystem.class.internalConsoleMetricsReporter=cn.com.servyou.yypt.opmc.agent.reporter.ConsoleMetricsReporter
 
-4. 配置opmcSystem.properties文件
+            ##如果你选择了<artifactId>opmc-agent-reporter</artifactId>，并且想通过JMX暴露
+            opmcSystem.class.internalJmxMetricsReporter=cn.com.servyou.yypt.opmc.agent.reporter.JmxMetricsReporter
 
-		##如果你选择了<artifactId>opmc-agent-core-support</artifactId>
-		opmcSystem.class.internalAspectHelper=cn.com.servyou.yypt.opmc.agent.fetch.helper.web.WebAspectHelper
-		##如果你选择了<artifactId>opmc-agent-agent-struts</artifactId>
-		opmcSystem.class.internalAspectHelper=cn.com.servyou.yypt.opmc.agent.fetch.helper.struts.StrutsWebAspectHelper
-
-		##如果你选择了<artifactId>opmc-agent-reporter</artifactId>，并且想在控制台展示
-		opmcSystem.class.internalConsoleMetricsReporter=cn.com.servyou.yypt.opmc.agent.reporter.ConsoleMetricsReporter
-
-		##如果你选择了<artifactId>opmc-agent-reporter</artifactId>，并且想通过JMX暴露
-		opmcSystem.class.internalJmxMetricsReporter=cn.com.servyou.yypt.opmc.agent.reporter.JmxMetricsReporter
-
-5. 配置aop.xml文件
+3. 配置aop.xml文件
 
 		<?xml version="1.0" encoding="UTF-8"?>
 		<aspectj>
@@ -168,12 +161,12 @@ opmc-agent主要有以下功能
 				<include within="cn.com.servyou.${yourpackage}.*" />
 		        <!--该写法下,监控器将会监控cn.com.servyou.${yourpackage}这个包以及子包下的所有类-->
 				<include within="cn.com.servyou.${yourpackage}..*" />
-				<exclude within="cn.com..*CGLIB*" />
+				<exclude within="..*CGLIB*" />
 			</weaver>
 		</aspectj>
 
 
-6. 配置日志文件
+4. 配置日志文件
 
 		log4j.logger.cn.com.servyou.yypt.opmc.agent=debug,opmcRollingFile #如果需要opmc的日志输出,将opmc包的日志级别保持为debug
 		log4j.appender.opmcRollingFile=org.apache.log4j.RollingFileAppender
@@ -223,17 +216,15 @@ opmc-agent主要有以下功能
 	- `exceptionInclude`默认为`Throwable`和`Exception`,有其他需要则请配置
 
 
-2. 在resource下创建文件
+2. 在resource下创建文件并配置内容
 	- opmcSystem.properties
 
-3. 配置opmcSystem.properties文件
+            ##如果你选择了<artifactId>opmc-agent-core-support</artifactId>
+            opmcSystem.class.internalAspectHelper=cn.com.servyou.yypt.opmc.agent.fetch.helper.web.WebAspectHelper
+            ##如果你选择了<artifactId>opmc-agent-agent-struts</artifactId>
+            opmcSystem.class.internalAspectHelper=cn.com.servyou.yypt.opmc.agent.fetch.helper.struts.StrutsWebAspectHelper
 
-		##如果你选择了<artifactId>opmc-agent-core-support</artifactId>
-		opmcSystem.class.internalAspectHelper=cn.com.servyou.yypt.opmc.agent.fetch.helper.web.WebAspectHelper
-		##如果你选择了<artifactId>opmc-agent-agent-struts</artifactId>
-		opmcSystem.class.internalAspectHelper=cn.com.servyou.yypt.opmc.agent.fetch.helper.struts.StrutsWebAspectHelper
-
-4. 配置日志文件
+3. 配置日志文件
 
 		log4j.logger.cn.com.servyou.opmc.agent=debug,opmcRollingFile #如果需要opmc的日志输出,将opmc包的日志级别保持为debug
 		log4j.appender.opmcRollingFile=org.apache.log4j.RollingFileAppender
