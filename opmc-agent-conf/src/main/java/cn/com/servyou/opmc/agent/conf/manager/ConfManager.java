@@ -98,6 +98,8 @@ public class ConfManager {
                     localURL = url;
                 } else if ("jar".equals(url.getProtocol())) {
                     loadConfFromURL(url);
+                } else if ("zip".equals(url.getProtocol())) {
+                    loadConfFromURL(url);
                 }
                 //other ignore
             }
