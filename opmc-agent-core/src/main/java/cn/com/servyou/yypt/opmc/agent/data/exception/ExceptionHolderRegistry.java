@@ -28,8 +28,6 @@ public class ExceptionHolderRegistry implements Initializer {
     @ConfigAnnotation(name = OPMC_USER_CONFIG_EXCEPTION_HOLDER_QUEUE_SIZE)
     private int queueSize;
 
-    private ThreadPoolExecutor executor;
-
     /**
      * 待发送的异常队列
      */
@@ -56,11 +54,8 @@ public class ExceptionHolderRegistry implements Initializer {
         if (exceptionHolder == null) {
             return;
         }
-        if (executor != null) {
-            executor.submit(new ExceptionTask(exceptionHolder, exceptionsCacheQueue));
-            return;
-        }
-        exceptionsCacheQueue.offer(exceptionHolder);
+        exceptionHolder.setCounts(exceptionHolder.getCounts() + 1);
+        put(exceptionHolder);
     }
 
     /**
@@ -76,7 +71,6 @@ public class ExceptionHolderRegistry implements Initializer {
     @Override
     public void init() {
         exceptionsCacheQueue = new LinkedBlockingQueue<ExceptionHolder>(queueSize);
-        executor = new ThreadPoolExecutor(3, 3, 30, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(16));
     }
 
     public int getQueueSize() {
@@ -87,61 +81,4 @@ public class ExceptionHolderRegistry implements Initializer {
         this.queueSize = queueSize;
     }
 
-    static class ExceptionTask implements Runnable {
-
-        private static final Log LOGGER = LogFactory.getLog(ExceptionTask.class);
-
-        /**
-         * 移除
-         */
-        private ExceptionHolder exceptionHolder;
-
-        /**
-         * 队列
-         */
-        private LinkedBlockingQueue<ExceptionHolder> queue;
-
-        public ExceptionTask(ExceptionHolder exceptionHolder, LinkedBlockingQueue<ExceptionHolder> queue) {
-            this.exceptionHolder = exceptionHolder;
-            this.queue = queue;
-        }
-
-        @Override
-        public void run() {
-            if (exceptionHolder == null) {
-                queue = null;
-                return;
-            }
-            if (queue == null) {
-                return;
-            }
-            int count = exceptionHolder.getCounts();
-            try {
-                switch (count) {
-                    case 1:
-                        Thread.sleep(1000);
-                        break;
-                    case 2:
-                        Thread.sleep(3000);
-                        break;
-                    case 3:
-                        Thread.sleep(5000);
-                        break;
-                    case 4:
-                        LOGGER.warn("exception send fail fourth,name is " +
-                                exceptionHolder.getThrowable().getClass().getName());
-                        break;
-                }
-                exceptionHolder.setCounts(count + 1);
-                if (count < 4) {
-                    queue.offer(exceptionHolder);
-                }
-
-            } catch (Exception e) {
-            } finally {
-                queue = null;
-                exceptionHolder = null;
-            }
-        }
-    }
 }
