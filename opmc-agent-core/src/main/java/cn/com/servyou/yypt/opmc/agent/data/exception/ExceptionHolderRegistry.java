@@ -51,6 +51,11 @@ public class ExceptionHolderRegistry implements Initializer {
      * @param exceptionHolder 对象
      */
     public void putUpdate(ExceptionHolder exceptionHolder) {
+        try {
+            Thread.sleep(3000L);
+        } catch (InterruptedException e) {
+            //ignore
+        }
         if (exceptionHolder == null) {
             return;
         }
