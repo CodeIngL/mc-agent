@@ -49,7 +49,7 @@ ie:在方法上添加相关注解即可实现业务系统的监控。
         <dependency>
             <groupId>cn.com.servyou</groupId>
             <artifactId>opmc-agent-spring</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.0-RELEASE</version>
         </dependency>
 
 
