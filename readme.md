@@ -90,7 +90,7 @@ ie:在方法上添加相关注解即可实现业务系统的监控。
 			    <!-- <property name="exceptionInclude" value=""/> -->
 			</bean>
 
-			//Metrics配置项:
+			<!--Metrics配置项-->
 		    <metrics:metric-registry name="metricRegistry" id="metricRegistry"/>
 		    <metrics:health-check-registry id="health"/>
 		    <metrics:annotation-driven metric-registry="metricRegistry"/>
