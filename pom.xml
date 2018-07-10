@@ -33,6 +33,7 @@
         <module>opmc-agent-dubbo</module>
         <module>opmc-agent-log</module>
         <module>opmc-agent-reporter</module>
+        <module>opmc-agent-springboot</module>
     </modules>
 
     <properties>

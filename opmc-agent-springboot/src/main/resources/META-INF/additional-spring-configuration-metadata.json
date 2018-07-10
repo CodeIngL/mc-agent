@@ -1,0 +1,27 @@
+{
+  "properties": [
+    {
+      "name": "opmc.appName",
+      "type": "java.lang.String",
+      "description": "opmc endpoint's appName"
+    },
+    {
+      "name": "opmc.serverUrl",
+      "type": "java.lang.String",
+      "description": "opmc server's url",
+      "defaultValue": "http://opmc.dc.servyou-it.com:8001/opmc-web"
+    },
+    {
+      "name": "opmc.enable",
+      "type": "java.lang.Boolean",
+      "description": "opmc enable or disable",
+      "defaultValue": true
+    },
+    {
+      "name": "opmc.exceptionIncludes",
+      "type": "java.util.Set<java.lang.String>",
+      "description": "opmc exception that we should catch"
+    }
+  ]
+}
+
