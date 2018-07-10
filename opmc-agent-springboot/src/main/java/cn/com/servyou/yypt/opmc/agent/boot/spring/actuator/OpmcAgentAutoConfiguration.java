@@ -2,13 +2,15 @@ package cn.com.servyou.yypt.opmc.agent.boot.spring.actuator;
 
 import cn.com.servyou.yypt.opmc.agent.boot.spring.aspect.ExceptionAspect;
 import cn.com.servyou.yypt.opmc.agent.boot.spring.aspect.MonitorByAnnotationAspect;
+import cn.com.servyou.yypt.opmc.agent.boot.spring.processor.OpmcMetricRegistryProcessor;
+import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.SharedMetricRegistries;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import java.util.HashSet;
 
 /**
  * <p>Description: </p>
@@ -44,4 +46,15 @@ public class OpmcAgentAutoConfiguration {
         return new MonitorByAnnotationAspect();
     }
 
+    @Bean
+    MetricRegistry metricRegistry() {
+        return SharedMetricRegistries.getOrCreate("metricRegistry");
+    }
+
+    @Bean
+    @ConditionalOnProperty(name = "opmc.enableMetrics", havingValue = "true")
+    OpmcMetricRegistryProcessor opmcMetricRegistryProcessor(OpmcAgentConfigurationProperties confProperties) {
+        OpmcMetricRegistryProcessor processor = new OpmcMetricRegistryProcessor(confProperties.getReporters());
+        return processor;
+    }
 }

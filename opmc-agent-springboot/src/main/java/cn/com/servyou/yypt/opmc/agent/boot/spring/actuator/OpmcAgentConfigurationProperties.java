@@ -3,8 +3,9 @@ package cn.com.servyou.yypt.opmc.agent.boot.spring.actuator;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.ConfigurationPropertiesBinding;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -23,4 +24,20 @@ public class OpmcAgentConfigurationProperties {
     boolean enable;
 
     Set<String> exceptionIncludes;
+
+    boolean enableMetrics;
+
+    List<OpmcReporterProperties> reporters;
+
+    @Getter
+    @Setter
+    @ConfigurationProperties(prefix = "reporter")
+    public static class OpmcReporterProperties {
+
+        String type;
+
+        Map<String, String> kv;
+
+    }
+
 }
