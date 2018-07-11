@@ -4,24 +4,32 @@ import cn.com.servyou.yypt.opmc.agent.boot.spring.actuator.OpmcAgentConfiguratio
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.SharedMetricRegistries;
 import com.codahale.metrics.health.HealthCheckRegistry;
+import com.ryantenney.metrics.spring.MetricsBeanPostProcessorFactory;
 import com.ryantenney.metrics.spring.reporter.AbstractReporterElementParser;
 import com.ryantenney.metrics.spring.reporter.ReporterElementParser;
+import org.springframework.aop.framework.ProxyConfig;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
+import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.*;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.Ordered;
 import org.springframework.util.StringUtils;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.springframework.beans.factory.config.BeanDefinition.ROLE_APPLICATION;
+import static org.springframework.beans.factory.config.BeanDefinition.ROLE_INFRASTRUCTURE;
 
 /**
  * @author laihj
  *         2018/7/10
  */
-public class OpmcMetricRegistryProcessor implements BeanDefinitionRegistryPostProcessor, Ordered {
+public class OpmcMetricRegistryProcessor implements BeanPostProcessor, ApplicationContextAware, Ordered {
 
     static final Map<String, String> TYPE_MAPPING;
     static final String ID = "id";
@@ -29,9 +37,13 @@ public class OpmcMetricRegistryProcessor implements BeanDefinitionRegistryPostPr
     static final String ENABLED = "enabled";
     static final String METRIC_REGISTRY_REF = "metric-registry";
 
+    private AtomicBoolean mark = new AtomicBoolean(false);
+
+    private ApplicationContext applicationContext;
+
     static {
         TYPE_MAPPING = new HashMap<String, String>();
-        TYPE_MAPPING.put("jmx", "com.ryantenney.metrics.spring.reporter.");
+        TYPE_MAPPING.put("jmx", "com.ryantenney.metrics.spring.reporter.JmxReporterFactoryBean");
         TYPE_MAPPING.put("console", "com.ryantenney.metrics.spring.reporter.ConsoleReporterFactoryBean");
         TYPE_MAPPING.put("csv", "com.ryantenney.metrics.spring.reporter.CsvReporterFactoryBean");
         TYPE_MAPPING.put("datadog", "com.ryantenney.metrics.spring.reporter.DatadogReporterFactoryBean");
@@ -50,7 +62,6 @@ public class OpmcMetricRegistryProcessor implements BeanDefinitionRegistryPostPr
         this.reporters = reporters;
     }
 
-    @Override
     public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
         //<metrics:metric-registry name="metricRegistry" id="metricRegistry"/>
         final String name = "metricRegistry";
@@ -58,10 +69,26 @@ public class OpmcMetricRegistryProcessor implements BeanDefinitionRegistryPostPr
         beanDefBuilder.setFactoryMethod("getOrCreate");
         beanDefBuilder.addConstructorArgValue(name);
         registry.registerBeanDefinition(name, beanDefBuilder.getBeanDefinition());
-        //<metrics:annotation-driven metric-registry="metricRegistry"/>
-        registerComponent(registry, build(MetricRegistry.class, null, ROLE_APPLICATION));
         //<metrics:health-check-registry id="health"/>
-        registerComponent(registry, build(HealthCheckRegistry.class, null, ROLE_APPLICATION));
+        final String healthId = "health";
+        registerComponent(registry, build(HealthCheckRegistry.class, null, ROLE_APPLICATION), healthId);
+        //<metrics:annotation-driven metric-registry="metricRegistry"/>
+        ProxyConfig proxyConfig = new ProxyConfig();
+        proxyConfig.setProxyTargetClass(true);
+
+        registerComponent(registry, this.build(MetricsBeanPostProcessorFactory.class, null, ROLE_INFRASTRUCTURE).setFactoryMethod("exceptionMetered").addConstructorArgReference(name).addConstructorArgValue(proxyConfig), null);
+        registerComponent(registry, this.build(MetricsBeanPostProcessorFactory.class, null, ROLE_INFRASTRUCTURE).setFactoryMethod("metered").addConstructorArgReference(name).addConstructorArgValue(proxyConfig), null);
+        registerComponent(registry, this.build(MetricsBeanPostProcessorFactory.class, null, ROLE_INFRASTRUCTURE).setFactoryMethod("timed").addConstructorArgReference(name).addConstructorArgValue(proxyConfig), null);
+        registerComponent(registry, this.build(MetricsBeanPostProcessorFactory.class, null, ROLE_INFRASTRUCTURE).setFactoryMethod("counted").addConstructorArgReference(name).addConstructorArgValue(proxyConfig), null);
+        registerComponent(registry, this.build(MetricsBeanPostProcessorFactory.class, null, ROLE_INFRASTRUCTURE).setFactoryMethod("gaugeField").addConstructorArgReference(name), null);
+        registerComponent(registry, this.build(MetricsBeanPostProcessorFactory.class, null, ROLE_INFRASTRUCTURE).setFactoryMethod("gaugeMethod").addConstructorArgReference(name), null);
+        registerComponent(registry, this.build(MetricsBeanPostProcessorFactory.class, null, ROLE_INFRASTRUCTURE).setFactoryMethod("cachedGauge").addConstructorArgReference(name), null);
+        registerComponent(registry, this.build(MetricsBeanPostProcessorFactory.class, null, ROLE_INFRASTRUCTURE).setFactoryMethod("metric").addConstructorArgReference(name), null);
+        registerComponent(registry, this.build(MetricsBeanPostProcessorFactory.class, null, ROLE_INFRASTRUCTURE).setFactoryMethod("healthCheck").addConstructorArgReference(healthId), null);
+        registerComponent(registry, this.build(MetricsBeanPostProcessorFactory.class, null, ROLE_INFRASTRUCTURE).setFactoryMethod("legacyCounted").addConstructorArgReference(name).addConstructorArgValue(proxyConfig), null);
+        registerComponent(registry, this.build(MetricsBeanPostProcessorFactory.class, null, ROLE_INFRASTRUCTURE).setFactoryMethod("legacyCachedGauge").addConstructorArgReference(name), null);
+        registerComponent(registry, this.build(MetricsBeanPostProcessorFactory.class, null, ROLE_INFRASTRUCTURE).setFactoryMethod("legacyMetric").addConstructorArgReference(name), null);
+
 
         //<metrics:reporter type="jmx" id="metricJmxReporter" metric-registry="metricRegistry" />
         for (OpmcAgentConfigurationProperties.OpmcReporterProperties reporter : reporters) {
@@ -80,14 +107,13 @@ public class OpmcMetricRegistryProcessor implements BeanDefinitionRegistryPostPr
                     } catch (ClassNotFoundException e) {
                         break;
                     }
-                    final BeanDefinitionBuilder builder;
-                    builder = BeanDefinitionBuilder.rootBeanDefinition(cls.getClass());
+                    final BeanDefinitionBuilder builder = BeanDefinitionBuilder.rootBeanDefinition(cls);
                     builder.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
                     AbstractBeanDefinition rawBeanDefinition = builder.getRawBeanDefinition();
                     rawBeanDefinition.setAutowireCandidate(false);
                     rawBeanDefinition.setSource(null);
                     addDefaultProperties(reporter, builder);
-                    registerComponent(registry, beanDefBuilder);
+                    registerComponent(registry, builder, null);
                     break;
                 }
             }
@@ -95,9 +121,14 @@ public class OpmcMetricRegistryProcessor implements BeanDefinitionRegistryPostPr
         return;
     }
 
-    @Override
+
     public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
+        if (beanFactory instanceof DefaultListableBeanFactory) {
+            DefaultListableBeanFactory defaultListableBeanFactory = (DefaultListableBeanFactory) beanFactory;
+            postProcessBeanDefinitionRegistry(defaultListableBeanFactory);
+        }
         //ignore
+
     }
 
     private BeanDefinitionBuilder build(Class<?> klazz, Object source, int role) {
@@ -107,16 +138,23 @@ public class OpmcMetricRegistryProcessor implements BeanDefinitionRegistryPostPr
         return beanDefBuilder;
     }
 
-    private String registerComponent(BeanDefinitionRegistry registry, BeanDefinitionBuilder beanDefBuilder) {
+    private String registerComponent(BeanDefinitionRegistry registry, BeanDefinitionBuilder beanDefBuilder, String id) {
         final BeanDefinition beanDef = beanDefBuilder.getBeanDefinition();
-        final String beanName = BeanDefinitionReaderUtils.generateBeanName(beanDef, registry);
+        final String beanName;
+        if (!StringUtils.hasText(id)) {
+            beanName = BeanDefinitionReaderUtils.generateBeanName(beanDef, registry);
+        } else {
+            beanName = id;
+        }
         registry.registerBeanDefinition(beanName, beanDef);
         return beanName;
     }
 
     protected void addDefaultProperties(OpmcAgentConfigurationProperties.OpmcReporterProperties reporterProperties, BeanDefinitionBuilder beanDefBuilder) {
         final Map<String, String> properties = new HashMap<String, String>();
-        properties.putAll(reporterProperties.getKv());
+        if (reporterProperties.getKv() != null) {
+            properties.putAll(reporterProperties.getKv());
+        }
         properties.remove(METRIC_REGISTRY_REF);
         properties.remove(ID);
         properties.remove(TYPE);
@@ -129,7 +167,27 @@ public class OpmcMetricRegistryProcessor implements BeanDefinitionRegistryPostPr
     }
 
     @Override
+    public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+        if (!mark.get()) {
+            if (mark.compareAndSet(false, true)) {
+                postProcessBeanFactory((ConfigurableListableBeanFactory) applicationContext.getAutowireCapableBeanFactory());
+            }
+        }
+        return bean;
+    }
+
+    @Override
+    public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+        return bean;
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
+    }
+
+    @Override
     public int getOrder() {
-        return LOWEST_PRECEDENCE;
+        return HIGHEST_PRECEDENCE;
     }
 }

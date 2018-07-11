@@ -2,7 +2,10 @@ package cn.com.servyou.yypt.opmc.agent.boot.spring.actuator;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
@@ -15,6 +18,7 @@ import java.util.Set;
 @ConfigurationProperties(prefix = "opmc")
 @Getter
 @Setter
+@Component
 public class OpmcAgentConfigurationProperties {
 
     String appName;
@@ -39,5 +43,4 @@ public class OpmcAgentConfigurationProperties {
         Map<String, String> kv;
 
     }
-
 }

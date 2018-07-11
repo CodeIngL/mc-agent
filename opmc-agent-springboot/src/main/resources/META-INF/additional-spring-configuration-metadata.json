@@ -31,8 +31,7 @@
     {
       "name": "opmc.reporters",
       "type": "java.util.List<cn.com.servyou.yypt.opmc.agent.boot.spring.actuator.OpmcAgentConfigurationProperties.OpmcReporterProperties>",
-      "description": "opmc exception that we should catch",
-      "defaultValue": false
+      "description": "opmc exception that we should catch"
     }
   ]
 }

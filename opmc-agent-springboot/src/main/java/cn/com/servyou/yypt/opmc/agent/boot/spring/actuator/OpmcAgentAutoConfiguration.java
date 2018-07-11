@@ -5,9 +5,11 @@ import cn.com.servyou.yypt.opmc.agent.boot.spring.aspect.MonitorByAnnotationAspe
 import cn.com.servyou.yypt.opmc.agent.boot.spring.processor.OpmcMetricRegistryProcessor;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.SharedMetricRegistries;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,12 +28,12 @@ public class OpmcAgentAutoConfiguration {
     @Bean
     cn.com.servyou.yypt.opmc.agent.config.Configuration configuration(OpmcAgentConfigurationProperties confProperties) {
         cn.com.servyou.yypt.opmc.agent.config.Configuration configuration = new cn.com.servyou.yypt.opmc.agent.config.Configuration();
-        configuration.setAppName(configuration.getAppName());
-        configuration.setServerUrl(configuration.getServerUrl());
+        configuration.setAppName(confProperties.getAppName());
+        configuration.setServerUrl(confProperties.getServerUrl());
         if (configuration.getExceptionIncludes() != null) {
             configuration.getExceptionIncludes().addAll(confProperties.getExceptionIncludes());
         }
-        configuration.setEnable(configuration.isEnable());
+        configuration.setEnable(confProperties.isEnable());
         return configuration;
     }
 
