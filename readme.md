@@ -123,13 +123,9 @@ ie:在方法上添加相关注解即可实现业务系统的监控。
 catalina.sh中添加
 
 		. findPassthroughAgent.sh "$CATALINA_BASE"/conf/server.xml "$CATALINA_HOME"/webapps
-		JAVA_OPTS="$JAVA_OPTS -Dcom.sun.management.jmxremote \
-		-Dcom.sun.management.jmxremote.port=18090 \
-		-Dcom.sun.management.jmxremote.ssl=false \
-		-Dcom.sun.management.jmxremote.authenticate=false \
-		-Djava.rmi.server.hostname=${本机ip}"
+		JAVA_OPTS="$JAVA_OPTS -Djava.rmi.server.hostname=${本机ip}"
 
-*注1：port为本应用的JMX远程连接端口，一般是18090，非此端口需要和基础架构组说明*
+*注1：jmx端口默认是18090，如果你需要改动，可以自己覆盖。非此端口需要和基础架构组说明*
 *注2：hostname为本机对外暴露的IP*
 
 findAspectjAgent.sh用于找到相应的agent。下面是脚本测试示例:
