@@ -27,6 +27,8 @@ ie:在方法上添加相关注解即可实现业务系统的监控。
 
 # 快速开始
 
+1.0-RELEASE不存在ReponseMapping开关,1.1-RELASE存在开关opmc.requestMappingEnabled=false的默认配置
+
 ## 第一步:选择合适依赖
 
 **pom依赖**:
@@ -35,21 +37,21 @@ ie:在方法上添加相关注解即可实现业务系统的监控。
         <dependency>
             <groupId>cn.com.servyou</groupId>
             <artifactId>opmc-agent-log</artifactId>
-            <version>1.0-RELEASE</version>
+            <version>1.x-RELEASE</version>
         </dependency>
 
 		<!--支持dubbo异常抓取功能(可选)-->
         <dependency>
             <groupId>cn.com.servyou</groupId>
             <artifactId>opmc-agent-dubbo</artifactId>
-            <version>1.0-RELEASE</version>
+            <version>1.x-RELEASE</version>
         </dependency>
 
 		<!--spring支持(spring下必选)-->
         <dependency>
             <groupId>cn.com.servyou</groupId>
             <artifactId>opmc-agent-spring</artifactId>
-            <version>1.0-RELEASE</version>
+            <version>1.x-RELEASE</version>
         </dependency>
 
 
