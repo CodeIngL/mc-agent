@@ -6,6 +6,7 @@ import cn.com.servyou.yypt.opmc.agent.fetch.weaver.aspect.MonitorByAnnotationAsp
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,6 +29,9 @@ public class MonitorByAnnotationAspect {
     static final String REQUEST_METHOD_DEFAULT_VALUE = "DEFAULT";
 
     static final String KEY_DIVIDE = ".";
+
+    @Value("${opmc.requestMappingEnabled:false}")
+    boolean requestMappingEnabled;
 
     public static final AnnotationPropertiesGetter REQUESTMAPPING = new AnnotationPropertiesGetter<RequestMapping>() {
 
@@ -75,7 +79,10 @@ public class MonitorByAnnotationAspect {
      */
     @Around("@annotation(org.springframework.web.bind.annotation.RequestMapping)")
     public Object monitorRequestMapping(ProceedingJoinPoint pjp) throws Throwable {
-        return MonitorByAnnotationAspectWeaver.monitorTimer(pjp, REQUESTMAPPING);
+        if(requestMappingEnabled) {
+            return MonitorByAnnotationAspectWeaver.monitorTimer(pjp, REQUESTMAPPING);
+        };
+        return pjp.proceed();
     }
 
 
