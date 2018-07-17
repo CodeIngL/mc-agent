@@ -95,7 +95,6 @@ ie:在方法上添加相关注解即可实现业务系统的监控。
 		    <metrics:health-check-registry id="health"/>
 		    <metrics:annotation-driven metric-registry="metricRegistry"/>
 		    <metrics:reporter type="jmx" id="metricJmxReporter" metric-registry="metricRegistry"/>
-		    <!-- <metrics:reporter metric-registry="metricRegistry" id="metricConsoleReporter" type="console" period="1m"/> -->
 		</beans>
 
 
@@ -116,35 +115,23 @@ ie:在方法上添加相关注解即可实现业务系统的监控。
 
 ## 第三步:配置VM参数
 
-**配置VM参数**:
+**配置VM参数(针对tomcat)**:
 
-下载[findAspectjAgent.sh](http://192.168.2.107/laihj/findagent/blob/master/findAspectjAgent.sh)该文件放置到tomcat的bin目录下
+下载[findAgent.sh](http://192.168.2.107/laihj/findagent/blob/master/findAgent.sh)该文件放置到tomcat的bin目录下
 
-catalina.sh中添加
 
-		. findPassthroughAgent.sh "$CATALINA_BASE"/conf/server.xml "$CATALINA_HOME"/webapps
-		JAVA_OPTS="$JAVA_OPTS -Djava.rmi.server.hostname=${本机ip}"
+然后在catalina.sh的位置
+
+        # ----- Execute The Requested Command -----------------------------------------
+
+添加以下代码
+
+    . "$CATALINA_HOME"/bin/findAgent.sh "$CATALINA_BASE"/conf/server.xml "$CATALINA_HOME"/webapps
+    JAVA_OPTS="$JAVA_OPTS -Djava.rmi.server.hostname=${本机ip}"
+
+**请把本机ip替换成你的机器IP**
 
 *注1：jmx端口默认是18090，如果你需要改动，可以自己覆盖。非此端口需要和基础架构组说明*
-*注2：hostname为本机对外暴露的IP*
-
-findAspectjAgent.sh用于找到相应的agent。下面是脚本测试示例:
-
-        #!/bin/bash
-
-        CATALINA_BASE="/d/progammer/apache-tomcat-7.0.52"
-        CATALINA_HOME="/d/progammer/apache-tomcat-7.0.52"
-
-        JAVA_OPTS="";
-
-        . findAspectjAgent.sh "$CATALINA_BASE"/conf/server.xml "$CATALINA_HOME"/webapps
-
-        echo $JAVA_OPTS
-
-        JAVA_OPTS="$JAVA_OPTS -Djava.rmi.server.hostname=192.168.100.110"
-
-        ehco $JAVA_OPTS
-
 
 -----
 
