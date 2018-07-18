@@ -27,7 +27,9 @@ ie:在方法上添加相关注解即可实现业务系统的监控。
 
 # 快速开始
 
-1.0-RELEASE不存在ReponseMapping开关,1.1-RELASE存在开关opmc.requestMappingEnabled=false的默认配置
+1.0-RELEASE不存在ReponseMapping开关,
+1.1-RELASE存在开关opmc.requestMappingEnabled=false的默认配置
+1.2-RELASE支持spring更加简化的配置
 
 ## 第一步:选择合适依赖
 
