@@ -34,6 +34,7 @@
         <module>opmc-agent-log</module>
         <module>opmc-agent-reporter</module>
         <module>opmc-agent-springboot</module>
+        <module>opmc-agent-bom</module>
     </modules>
 
     <properties>
