@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.aop.config.AopConfigUtils;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
+import org.springframework.beans.factory.support.SimpleBeanDefinitionRegistry;
 import org.springframework.beans.factory.xml.BeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
@@ -44,7 +45,7 @@ public class OpmcDrivenBeanDefinitionParser implements BeanDefinitionParser {
         if (!"false".equals(mark)) {
             BeanDefinitionRegistry registry = parserContext.getRegistry();
             ByteArrayResource byteArrayResource = new ByteArrayResource(METRIC_DEFAULT.getBytes());
-            XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(registry);
+            XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(new SimpleBeanDefinitionRegistry());
             int count = reader.loadBeanDefinitions(byteArrayResource);
             if (count > 0) {
                 BeanDefinitionRegistry metricRegistry = reader.getRegistry();
