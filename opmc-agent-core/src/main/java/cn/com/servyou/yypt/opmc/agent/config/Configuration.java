@@ -45,6 +45,10 @@ public class Configuration {
     @ConfigAnnotation(name = OPMC_USER_CONFIG_EXCEPTION_INCLUDES)
     private Set<String> exceptionIncludes = new HashSet<String>();
 
+
+    @ConfigAnnotation(name = OPMC_USER_CONFIG_CATCH_ALL)
+    private boolean catchAll = true;
+
     //------------------get-----set---------//
 
     public String getServerUrl() {
@@ -79,4 +83,11 @@ public class Configuration {
         this.enable = enable;
     }
 
+    public boolean isCatchAll() {
+        return catchAll;
+    }
+
+    public void setCatchAll(boolean catchAll) {
+        this.catchAll = catchAll;
+    }
 }

@@ -81,6 +81,9 @@ public class ExceptionHolderDelegate {
         if (!configuration.isEnable()) {
             return false;
         }
+        if (configuration.isCatchAll()){
+            return true;
+        }
         //include优先级较高,如果配置了include,那么只有在include里的才符合需求
         Collection<String> includes = configuration.getExceptionIncludes();
         if (includes.size() > 0) {
