@@ -34,6 +34,7 @@ public class OpmcAgentAutoConfiguration {
             configuration.getExceptionIncludes().addAll(confProperties.getExceptionIncludes());
         }
         configuration.setEnable(confProperties.isEnable());
+        configuration.setCatchAll(confProperties.isCatchAll());
         return configuration;
     }
 

@@ -31,6 +31,8 @@ public class OpmcAgentConfigurationProperties {
 
     boolean enableMetrics;
 
+    boolean catchAll;
+
     List<OpmcReporterProperties> reporters;
 
     @Getter
