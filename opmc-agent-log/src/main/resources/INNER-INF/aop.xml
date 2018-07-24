@@ -11,5 +11,6 @@
         <include within="org.slf4j..*"/>
         <include within="org.apache.log4j..*"/>
         <include within="org.apache.commons.logging..*"/>
+        <include within="ch.qos.logback.classic..*"/>
     </weaver>
 </aspectj>
