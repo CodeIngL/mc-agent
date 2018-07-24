@@ -5,7 +5,7 @@
     <parent>
         <artifactId>opmc-agent</artifactId>
         <groupId>cn.com.servyou</groupId>
-        <version>1.4-SNAPSHOT</version>
+        <version>1.4-RELEASE</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
