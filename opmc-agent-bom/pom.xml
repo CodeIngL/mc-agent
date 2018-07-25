@@ -95,6 +95,11 @@
                 <artifactId>opmc-agent-struts</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>cn.com.servyou</groupId>
+                <artifactId>opmc-agent-jvm</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
             <!--other's-->
             <dependency>
