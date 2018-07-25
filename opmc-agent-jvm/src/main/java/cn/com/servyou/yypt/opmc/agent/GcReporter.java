@@ -4,6 +4,7 @@ import cn.com.servyou.yypt.opmc.agent.jvm.tools.FullGcShower;
 import cn.com.servyou.yypt.opmc.agent.metric.GarbageCollectorMetric;
 import cn.com.servyou.yypt.opmc.agent.metric.GarbageCollectorMetricProvider;
 import cn.com.servyou.yypt.opmc.agent.metric.GarbageCollectorMetricSnapshot;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.PostConstruct;
@@ -37,6 +38,7 @@ public class GcReporter {
 
     private long lastSendTime = System.currentTimeMillis();
 
+    @Setter
     private String url = "http://localhost/opmc/gcCollector";
 
     @PostConstruct

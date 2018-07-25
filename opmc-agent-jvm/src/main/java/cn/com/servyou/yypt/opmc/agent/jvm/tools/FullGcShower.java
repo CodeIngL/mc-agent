@@ -85,15 +85,16 @@ public class FullGcShower {
             userFormat = new OptionFormat(format.getName());
             userFormat.insertSubFormat(0, format.getSubFormat(gcIndex));
             userFormat.insertSubFormat(1, format.getSubFormat(gcTime));
+            formatter = new OptionOutputFormatter(monitoredVm, userFormat);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("jstat have a error",e);
         }
     }
 
     public String fetchFGC() {
         try {
             return formatter.getRow();
-        } catch (MonitorException e) {
+        } catch (Exception e) {
             log.error("can't get FGC info", e);
         }
         return null;
