@@ -17,6 +17,8 @@ import org.aspectj.lang.ProceedingJoinPoint;
 
 import java.lang.reflect.Method;
 import java.text.MessageFormat;
+import java.util.HashMap;
+import java.util.Map;
 
 import static cn.com.servyou.yypt.opmc.agent.constant.OpmcConfigConstants.CLASS_INTERNAL_DIVIDE_PARAM_PARSER_REGISTRY;
 import static cn.com.servyou.yypt.opmc.agent.constant.OpmcConfigConstants.CLASS_INTERNAL_KEY_CACHE_DELEGATE;
@@ -36,6 +38,16 @@ import static cn.com.servyou.yypt.opmc.agent.fetch.annotation.getter.AnnotationP
 public class AspectHelper {
 
     private static final Log LOGGER = LogFactory.getLog(AspectHelper.class);
+
+    private static final Map<String,String> aliasMapKV;
+
+    /**
+     * simple kv map for namespace
+     */
+    static {
+        aliasMapKV = new HashMap<String, String>();
+        aliasMapKV.put("RequestMapping","MCTimer");
+    }
 
     /**
      * 方法级的监控项被包装后的格式,从注解扫入以及在aop拦截时包装.格式为统计类型.类名.方法别名.
@@ -70,6 +82,9 @@ public class AspectHelper {
             IllegalAccessException, ClassNotFoundException, InstantiationException {
         //命名空间
         String nameSpace = getter.getAnnotation().getSimpleName();
+        if(aliasMapKV.containsKey(nameSpace)){
+            nameSpace = aliasMapKV.get(nameSpace);
+        }
         //获取注册方法
         Method method = MethodUtil.getSignatureMethod(pjp);
         KeyCache keyCache = keyCacheDelegate.takeKeyCache(method);

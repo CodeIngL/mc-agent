@@ -30,7 +30,7 @@ class ExceptionReporterTest {
         Configuration configuration = new Configuration();
         configuration.appName = "servyou";
         configuration.enable = true;
-        configuration.serverUrl = "";
+        configuration.serverUrl = "http://opmc-develop.sit.91lyd.com/opmc-web";
         configuration.exceptionIncludes = ["123", "234"];
         reporter.configuration = configuration;
         ExceptionHolderRegistry registry = new ExceptionHolderRegistry();
@@ -41,13 +41,15 @@ class ExceptionReporterTest {
     @Test
     void testExceptionReporter() {
         reporter.exceptionHolderRegistry.init();
+        ExceptionReportStarter starter = new ExceptionReportStarter();
+        starter.exceptionReporter = reporter;
+        starter.init();
         new Thread(new Runnable() {
             @Override
             void run() {
                 int i = 0;
                 while (true) {
                     ExceptionHolder exceptionHolder = new ExceptionHolder()
-                    exceptionHolder.available = true
                     Throwable throwable = null
                     switch (i % 5) {
                         case 0:
@@ -72,14 +74,15 @@ class ExceptionReporterTest {
                     reporter.exceptionHolderRegistry.put(exceptionHolder);
                     i++;
                     if (i == 10) {
+                        System.sleep(30000);
+                    }
+                    if (i == 20){
                         break;
                     }
                 }
             }
         }).start();
-        ExceptionReportStarter starter = new ExceptionReportStarter();
-        starter.exceptionReporter = reporter;
-        starter.init();
+
         System.sleep(50000);
         println(reporter.configuration);
     }

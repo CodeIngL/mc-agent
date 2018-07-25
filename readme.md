@@ -1,230 +1,110 @@
 ## 简介
 
-opmc-agent是运营平台监控中心的客户端插件，通过简单的配置，ie:在监控的方法上增加对应的注解即可实现业务系统的具体监控。
+opmc-agent是运营平台监控中心的客户端插件，配置简单。
 
-原版由**林菁**开发，新版由**laihj**开发，与之前旧版相比,具有以下特点
+ie:在方法上添加相关注解即可实现业务系统的监控。
 
-1. 模块化插件,不再依赖spring
+1. 模块化插件，不依赖spring
 
 2. 缓存切面操作，提高统计性能
-
-3. 代码设计重构
 
 关于细节,请参阅源码以及API
 
 ### opmc-agent功能特征 ###
 
-opmc-agent主要有以下功能
+功能如下
 
-1. 信息统计
-
-2. 异常抓取
+1. **信息统计**
+	- 耗时
+	- 调用次数
+	- 分布图区间
+2. **异常抓取**
 	- spring下@ExceptionHandler异常抓取
 	- log异常抓取
 	- dubbo异常抓取
+3. **心跳监测**
+	- 应用存活检测
 
-3. 心跳监测
+# 快速开始
 
-## 第一步:配置VM参数
+1.0-RELEASE不存在ReponseMapping开关,
+1.1-RELASE存在开关opmc.requestMappingEnabled=false的默认配置
+1.2-RELASE支持spring更加简化的配置
 
-**配置VM参数**:
+## 第一步:选择合适依赖
 
-		-javaagent:${aspectjweaver-1.8.9.jar}
-		-Dorg.aspectj.weaver.loadtime.configuration=${aop.xml};INNER-INF/aop.xml
-		-Dorg.aspectj.weaver.loadtime.configuration.lightxmlparser=true
-		-Dcom.sun.management.jmxremote
-		-Dcom.sun.management.jmxremote.port=18090
-		-Dcom.sun.management.jmxremote.ssl=false
-		-Dcom.sun.management.jmxremote.authenticate=false
-		-Djava.rmi.server.hostname=${本机ip}
+**pom依赖**:
 
-*注1：port为本应用的JMX远程连接端口，一般是18090，非此端口需要和基础架构组说明*
-*注2：hostname为本机对外暴露的IP*
-
-**`${aspectjweaver-1.8.9.jar}`**
-- 该jar的**路径**，以便JVM能够找到该jar。
-
-**`${aop.xml}`**
-- 项目中的**AOP配置文件**，以便Aspectj能够进行访问。
-
-**`jmx`**
-- 项目通过**jmx**暴露一些统计信息
-
-
-## 第二步:选择合适依赖
-
+		<!--支持log异常抓取功能(可选)-->
         <dependency>
             <groupId>cn.com.servyou</groupId>
             <artifactId>opmc-agent-log</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.x-RELEASE</version>
         </dependency>
 
-**log异常**抓取功能
-
+		<!--支持dubbo异常抓取功能(可选)-->
         <dependency>
             <groupId>cn.com.servyou</groupId>
             <artifactId>opmc-agent-dubbo</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.x-RELEASE</version>
         </dependency>
 
-**dubbo异常**抓取功能
-
-
+		<!--spring支持(spring下必选)-->
         <dependency>
             <groupId>cn.com.servyou</groupId>
             <artifactId>opmc-agent-spring</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.x-RELEASE</version>
         </dependency>
 
-**spring**功能
 
-
-## 第三步:集成
-
-### 非spring集成 ###
-
-	http://192.168.110.114/laihj/opmc-api-style
-
-该项目实例提供了servlet3下的简单示例。
-
-
-1. 添加相应模块
-
-        <dependency>
-            <groupId>cn.com.servyou</groupId>
-            <artifactId>opmc-agent-reporter</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-	提供暴露度量信息的功能，比如jmx,console
-
-
-        <dependency>
-            <groupId>cn.com.servyou</groupId>
-    		<artifactId>opmc-agent-core-support</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-	提供从HttpServletRequest获取参数的能力
-
-        <dependency>
-            <groupId>cn.com.servyou</groupId>
-    		<artifactId>opmc-agent-struts</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-	提供struts从actionForm获取参数的能力
-
-
-2. 在resource下创建文件并配置内容
-	- **opmc.properties**
-
-            ##应用名
-            opmc.user.config.appName=xxx
-            ##心跳地址
-            opmc.user.config.serverUrl=xxx
-            ##是否开启opmc
-            opmc.user.config.enable=false
-            ##抓取的异常类型
-            opmc.user.config.exceptionIncludes=Throwable,Exception
-            ##如果你选择了<artifactId>opmc-agent-reporter</artifactId>，并且想在控制台展示，且要自定义时间
-            opmc.user.metrics.console.reporter.period=30
-	- **opmcSystem.properties**
-
-            ##如果你选择了<artifactId>opmc-agent-core-support</artifactId>
-            opmcSystem.class.internalAspectHelper=cn.com.servyou.yypt.opmc.agent.fetch.helper.web.WebAspectHelper
-            ##如果你选择了<artifactId>opmc-agent-agent-struts</artifactId>
-            opmcSystem.class.internalAspectHelper=cn.com.servyou.yypt.opmc.agent.fetch.helper.struts.StrutsWebAspectHelper
-
-            ##如果你选择了<artifactId>opmc-agent-reporter</artifactId>，并且想在控制台展示
-            opmcSystem.class.internalConsoleMetricsReporter=cn.com.servyou.yypt.opmc.agent.reporter.ConsoleMetricsReporter
-
-            ##如果你选择了<artifactId>opmc-agent-reporter</artifactId>，并且想通过JMX暴露
-            opmcSystem.class.internalJmxMetricsReporter=cn.com.servyou.yypt.opmc.agent.reporter.JmxMetricsReporter
-
-3. 配置aop.xml文件
-
-		<?xml version="1.0" encoding="UTF-8"?>
-		<aspectj>
-		    <!--监控非spring框架下的统计项指标-->
-			<aspects>
-		        <!-- 监控器配置,这里无需改动 -->
-		        <concrete-aspect name="OpmcMonitor" extends="cn.com.servyou.yypt.opmc.agent.fetch.weaver.aspect.MonitorByAnnotationAspectWeaver">
-		            <pointcut name="timerPoint" expression="@annotation(cn.com.servyou.yypt.opmc.agent.fetch.annotation.define.MCTimer)" />
-		            <pointcut name="meterPoint" expression="@annotation(cn.com.servyou.yypt.opmc.agent.fetch.annotation.define.MCMeter)" />
-		            <pointcut name="counterPoint" expression="@annotation(cn.com.servyou.yypt.opmc.agent.fetch.annotation.define.MCCounter)" />
-		            <pointcut name="histogramPoint" expression="@annotation(cn.com.servyou.yypt.opmc.agent.fetch.annotation.define.MCHistogram)" />
-		        </concrete-aspect>
-
-			</aspects>
-		    <!--需要监测的包,可以多个include元素来指定多个包.使用时,请替代为实际项目里的包名-->
-		    <!--<weaver options="-XnoInline -Xlint:-cantFindType"> 这种写法可以忽略掉报错信息-->
-			<weaver options="-verbose">
-		        <!--该写法下,监控器将会监控cn.com.servyou.${yourpackage}这个包下的所有类,不包括子包-->
-				<include within="cn.com.servyou.${yourpackage}.*" />
-		        <!--该写法下,监控器将会监控cn.com.servyou.${yourpackage}这个包以及子包下的所有类-->
-				<include within="cn.com.servyou.${yourpackage}..*" />
-				<exclude within="..*CGLIB*" />
-			</weaver>
-		</aspectj>
-
-
-4. 配置日志文件
-
-		log4j.logger.cn.com.servyou.yypt.opmc.agent=debug,opmcRollingFile #如果需要opmc的日志输出,将opmc包的日志级别保持为debug
-		log4j.appender.opmcRollingFile=org.apache.log4j.RollingFileAppender
-		log4j.appender.opmcRollingFile.File=/Users/linj/Documents/logs/opmc.log #文件存放路径，请更改为实际存放路径
-		log4j.appender.opmcRollingFile.MaxFileSize=20MB
-		log4j.appender.opmcRollingFile.MaxBackupIndex=3
-		log4j.appender.opmcRollingFile.Encoding=UTF-8
-		log4j.appender.opmcRollingFile.Append=true
-		log4j.appender.opmcRollingFile.layout=org.apache.log4j.PatternLayout
-		log4j.appender.opmcRollingFile.layout.ConversionPattern=%d [%-5p] [%t] %c - %m(traceId=%X{traceId})%n
-		log4j.additivity.cn.com.servyou.yypt.opmc.agent=false
-
-
-
-### spring集成 ###
-
+## 第二步:spring集成
 
 1. 配置bean.xml
 
-		<!--已有此配置,忽略此项-->
-		<aop:aspectj-autoproxy proxy-target-class="true"/>
-		<!--已有此配置,忽略此项-->
-		<mvc:annotation-driven/>
-	    <!--扫描opmc-spring模块-->
-		<context:component-scan base-package="cn.com.servyou.yypt.opmc.agent.spring"/>
-		<!--配置类-->
-		<bean id="opmcConfiguration" class="cn.com.servyou.yypt.opmc.agent.config.Configuration">
-		    <!--必须参数:是否启用-->
-			<property name="enable" value="true"/>
-		    <!--必须参数:服务端的地址-->
-		    <!--opmc生产地址为: http://opmc.dc.servyou-it.com:8001/opmc-web  -->
-		    <property name="serverUrl" value="http://opmc.sit.91lyd.com/opmc-web"/>
-		    <!--可选参数:应用名-->
-		    <property name="appName" value="xxxxx"></property>
-		    <!--可选参数:需要监测异常,ie:DataException-->
-		    <!-- <property name="exceptionInclude" value=""/> -->
-		</bean>
+		<?xml version="1.0" encoding="UTF-8"?>
+		<beans xmlns="http://www.springframework.org/schema/beans"
+		       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		       xmlns:metrics="http://www.ryantenney.com/schema/metrics"
+		       xmlns:context="http://www.springframework.org/schema/context"
+		       xmlns:aop="http://www.springframework.org/schema/aop"
+		       xmlns:mvc="http://www.springframework.org/schema/mvc"
+		       xsi:schemaLocation="
+		       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		       http://www.ryantenney.com/schema/metrics http://www.ryantenney.com/schema/metrics/metrics.xsd
+		       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+		       http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
-        <!--Metrics配置项-->
-	    <metrics:metric-registry name="metricRegistry" id="metricRegistry"/>
-	    <metrics:health-check-registry id="health"/>
-	    <metrics:annotation-driven metric-registry="metricRegistry"/>
-	    <metrics:reporter type="jmx" id="metricJmxReporter" metric-registry="metricRegistry"/>
-	    <!-- <metrics:reporter metric-registry="metricRegistry" id="metricConsoleReporter" type="console" period="1m"/> -->
+			<!--已有此配置,忽略此项-->
+			<aop:aspectj-autoproxy proxy-target-class="true"/>
+			<!--已有此配置,忽略此项-->
+			<mvc:annotation-driven/>
+		    <!--扫描opmc-spring模块-->
+			<context:component-scan base-package="cn.com.servyou.yypt.opmc.agent.spring"/>
+			<!--配置类-->
+    		<bean id="opmcConfiguration" class="cn.com.servyou.yypt.opmc.agent.config.Configuration">
+			    <!--必须参数:是否启用-->
+				<property name="enable" value="true"/>
+			    <!--必须参数:服务端的地址-->
+			    <!--opmc生产地址为: http://opmc.dc.servyou-it.com:8001/opmc-web  -->
+			    <property name="serverUrl" value="http://opmc.sit.91lyd.com/opmc-web"/>
+			    <!--可选参数:应用名-->
+			    <property name="appName" value="${appName}"></property>
+			    <!--可选参数:需要监测异常,ie:DataException-->
+			    <!-- <property name="exceptionInclude" value=""/> -->
+			</bean>
+
+			<!--Metrics配置项-->
+		    <metrics:metric-registry name="metricRegistry" id="metricRegistry"/>
+		    <metrics:health-check-registry id="health"/>
+		    <metrics:annotation-driven metric-registry="metricRegistry"/>
+		    <metrics:reporter type="jmx" id="metricJmxReporter" metric-registry="metricRegistry"/>
+		</beans>
 
 
 	- `exceptionInclude`默认为`Throwable`和`Exception`,有其他需要则请配置
 
-
-2. 在resource下创建文件并配置内容
-	- opmcSystem.properties
-
-            ##如果你选择了<artifactId>opmc-agent-core-support</artifactId>
-            opmcSystem.class.internalAspectHelper=cn.com.servyou.yypt.opmc.agent.fetch.helper.web.WebAspectHelper
-            ##如果你选择了<artifactId>opmc-agent-agent-struts</artifactId>
-            opmcSystem.class.internalAspectHelper=cn.com.servyou.yypt.opmc.agent.fetch.helper.struts.StrutsWebAspectHelper
-
-3. 配置日志文件
+2. 配置日志文件(可选)
 
 		log4j.logger.cn.com.servyou.opmc.agent=debug,opmcRollingFile #如果需要opmc的日志输出,将opmc包的日志级别保持为debug
 		log4j.appender.opmcRollingFile=org.apache.log4j.RollingFileAppender
@@ -237,8 +117,25 @@ opmc-agent主要有以下功能
 		log4j.appender.opmcRollingFile.layout.ConversionPattern=%d [%-5p] [%t] %c - %m(traceId=%X{traceId})%n
 		log4j.additivity.cn.com.servyou.opmc.agent=false
 
-**tip**，当监控项不在spring范围内的时候，可使用上面的aop.xml配置文件，做到互补。我们总是假设你项目不应该混用多种生态框架，但是尽管如此，还是未你提供了解决方案
+## 第三步:配置VM参数
 
+**配置VM参数(针对tomcat)**:
+
+下载[findAgent.sh](http://192.168.2.107/laihj/findagent/blob/master/findAgent.sh)该文件放置到tomcat的bin目录下
+
+
+然后在catalina.sh的位置
+
+        # ----- Execute The Requested Command -----------------------------------------
+
+添加以下代码
+
+    . "$CATALINA_HOME"/bin/findAgent.sh "$CATALINA_BASE"/conf/server.xml "$CATALINA_HOME"/webapps
+    JAVA_OPTS="$JAVA_OPTS -Djava.rmi.server.hostname=${本机ip}"
+
+**请把本机ip替换成你的机器IP**
+
+*注1：jmx端口默认是18090，如果你需要改动，可以自己覆盖。非此端口需要和基础架构组说明*
 
 -----
 
@@ -352,7 +249,11 @@ params对应注解方法的参数数组，例子见**FirstInputParamParser**实�
 
 * 插件无效
 
-检查配置文件的`enable`选项，是否配置为`true`
+检查配置文件的`enabled`选项，是否配置为`true`
+
+* 方法上加了注解，监控统计却没有生效
+
+检查插件配置文件的`basePackage`选项，是否有包含方法所在类。
 
 * 无法抓取Controller层的异常
 

@@ -47,12 +47,15 @@ public class ExceptionHolderDelegate {
         Object[] args = pjp.getArgs();
         for (int i = args.length - 1; i > 0; i--) {
             Object arg = args[i];
+            if (arg == null){
+                continue;
+            }
             if (arg instanceof Throwable) {
                 //如果参数是异常类型的,处理这个异常
-                if (!exceptionMatchedInRule(arg.getClass().getSimpleName())) {
+                if (exceptionMatchedInRule(arg.getClass().getSimpleName())) {
+                    exceptionHolderRegistry.put(new ExceptionHolder((Throwable) arg, System.currentTimeMillis()));
                     return;
                 }
-                exceptionHolderRegistry.put(new ExceptionHolder((Throwable) arg, System.currentTimeMillis()));
             }
         }
     }
@@ -80,6 +83,9 @@ public class ExceptionHolderDelegate {
     private boolean exceptionMatchedInRule(String exceptionName) {
         if (!configuration.isEnable()) {
             return false;
+        }
+        if (configuration.isCatchAll()){
+            return true;
         }
         //include优先级较高,如果配置了include,那么只有在include里的才符合需求
         Collection<String> includes = configuration.getExceptionIncludes();

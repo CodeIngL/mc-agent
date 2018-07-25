@@ -24,17 +24,13 @@ public class ExceptionHolder {
     private int counts;
 
 
-    /**
-     *
-     */
-    private boolean available = true;
-
     public ExceptionHolder() {
     }
 
     public ExceptionHolder(Throwable throwable, long timestamp) {
         this.throwable = throwable;
         this.timestamp = timestamp;
+        this.counts = 0;
     }
 
     public Throwable getThrowable() {
@@ -61,11 +57,4 @@ public class ExceptionHolder {
         this.counts = counts;
     }
 
-    public boolean isAvailable() {
-        return available;
-    }
-
-    public void setAvailable(boolean available) {
-        this.available = available;
-    }
 }

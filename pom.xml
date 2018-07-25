@@ -7,7 +7,7 @@
     <groupId>cn.com.servyou</groupId>
     <artifactId>opmc-agent</artifactId>
     <packaging>pom</packaging>
-    <version>1.1-SNAPSHOT</version>
+    <version>1.5-SNAPSHOT</version>
 
     <name>opmc-agent</name>
 
@@ -33,6 +33,9 @@
         <module>opmc-agent-dubbo</module>
         <module>opmc-agent-log</module>
         <module>opmc-agent-reporter</module>
+        <module>opmc-agent-springboot</module>
+        <module>opmc-agent-bom</module>
+        <module>opmc-agent-jvm</module>
     </modules>
 
     <properties>

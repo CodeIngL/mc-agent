@@ -1,0 +1,44 @@
+{
+  "properties": [
+    {
+      "name": "opmc.appName",
+      "type": "java.lang.String",
+      "description": "opmc endpoint's appName"
+    },
+    {
+      "name": "opmc.serverUrl",
+      "type": "java.lang.String",
+      "description": "opmc server's url",
+      "defaultValue": "http://opmc.dc.servyou-it.com:8001/opmc-web"
+    },
+    {
+      "name": "opmc.enable",
+      "type": "java.lang.Boolean",
+      "description": "opmc enable or disable",
+      "defaultValue": true
+    },
+    {
+      "name": "opmc.exceptionIncludes",
+      "type": "java.util.Set<java.lang.String>",
+      "description": "opmc exception that we should catch"
+    },
+    {
+      "name": "opmc.enableMetrics",
+      "type": "java.lang.Boolean",
+      "description": "opmc exception that we should catch",
+      "defaultValue": false
+    },
+    {
+      "name": "opmc.catchAll",
+      "type": "java.lang.Boolean",
+      "description": "opmc exception that we should catch",
+      "defaultValue": true
+    },
+    {
+      "name": "opmc.reporters",
+      "type": "java.util.List<cn.com.servyou.yypt.opmc.agent.boot.spring.actuator.OpmcAgentConfigurationProperties.OpmcReporterProperties>",
+      "description": "opmc exception that we should catch"
+    }
+  ]
+}
+

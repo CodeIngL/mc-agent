@@ -117,6 +117,11 @@ public class OpmcConfigConstants {
      */
     public static final String OPMC_USER_CONFIG_ENABLE = "opmc.user.config.enable";
 
+    /**
+     * 开关抓取所有异常
+     */
+    public static final String OPMC_USER_CONFIG_CATCH_ALL = "opmc.user.config.catchAll";
+
 
     /**
      * 异常包括
