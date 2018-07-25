@@ -2,16 +2,6 @@
 
 opmc-agent是运营平台监控中心的客户端插件，配置简单。
 
-ie:在方法上添加相关注解即可实现业务系统的监控。
-
-1. 模块化插件，不依赖spring
-
-2. 缓存切面操作，提高统计性能
-
-关于细节,请参阅源码以及API
-
-### opmc-agent功能特征 ###
-
 功能如下
 
 1. **信息统计**
@@ -24,12 +14,22 @@ ie:在方法上添加相关注解即可实现业务系统的监控。
 	- dubbo异常抓取
 3. **心跳监测**
 	- 应用存活检测
+4. **GC(FullGC)探测**
+    - 应用GC探测
+
+### 里程功能
+
+1.1-RELEASE存在开关opmc.requestMappingEnabled=false的默认配置,不能为RequestMapping进行统计
+
+1.2-RELEASE支持spring更加简化的配置
+
+1.3-RELEASE增加了异常开关,默认所有的异常进行抓取
+
+1.4-RELEASE修复了对logback的支持
+
+1.5-SNAPSHOT引入了FULLGC的支持(尚未RELEASE)
 
 # 快速开始
-
-1.0-RELEASE不存在ReponseMapping开关,
-1.1-RELASE存在开关opmc.requestMappingEnabled=false的默认配置
-1.2-RELASE支持spring更加简化的配置
 
 ## 第一步:选择合适依赖
 
@@ -39,21 +39,21 @@ ie:在方法上添加相关注解即可实现业务系统的监控。
         <dependency>
             <groupId>cn.com.servyou</groupId>
             <artifactId>opmc-agent-log</artifactId>
-            <version>1.x-RELEASE</version>
+            <version>1.4-RELEASE</version>
         </dependency>
 
 		<!--支持dubbo异常抓取功能(可选)-->
         <dependency>
             <groupId>cn.com.servyou</groupId>
             <artifactId>opmc-agent-dubbo</artifactId>
-            <version>1.x-RELEASE</version>
+            <version>1.4-RELEASE</version>
         </dependency>
 
 		<!--spring支持(spring下必选)-->
         <dependency>
             <groupId>cn.com.servyou</groupId>
             <artifactId>opmc-agent-spring</artifactId>
-            <version>1.x-RELEASE</version>
+            <version>1.4-RELEASE</version>
         </dependency>
 
 
@@ -62,60 +62,23 @@ ie:在方法上添加相关注解即可实现业务系统的监控。
 1. 配置bean.xml
 
 		<?xml version="1.0" encoding="UTF-8"?>
-		<beans xmlns="http://www.springframework.org/schema/beans"
-		       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		       xmlns:metrics="http://www.ryantenney.com/schema/metrics"
-		       xmlns:context="http://www.springframework.org/schema/context"
-		       xmlns:aop="http://www.springframework.org/schema/aop"
-		       xmlns:mvc="http://www.springframework.org/schema/mvc"
-		       xsi:schemaLocation="
-		       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-		       http://www.ryantenney.com/schema/metrics http://www.ryantenney.com/schema/metrics/metrics.xsd
-		       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
-		       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
-		       http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+        <beans xmlns="http://www.springframework.org/schema/beans"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xmlns:opmc="http://www.servyou.cn/schema/opmc"
+               xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+              http://www.servyou.cn/schema/opmc http://www.servyou.cn/schema/opmc/opmc.xsd">
 
-			<!--已有此配置,忽略此项-->
-			<aop:aspectj-autoproxy proxy-target-class="true"/>
-			<!--已有此配置,忽略此项-->
-			<mvc:annotation-driven/>
-		    <!--扫描opmc-spring模块-->
-			<context:component-scan base-package="cn.com.servyou.yypt.opmc.agent.spring"/>
-			<!--配置类-->
-    		<bean id="opmcConfiguration" class="cn.com.servyou.yypt.opmc.agent.config.Configuration">
-			    <!--必须参数:是否启用-->
-				<property name="enable" value="true"/>
-			    <!--必须参数:服务端的地址-->
-			    <!--opmc生产地址为: http://opmc.dc.servyou-it.com:8001/opmc-web  -->
-			    <property name="serverUrl" value="http://opmc.sit.91lyd.com/opmc-web"/>
-			    <!--可选参数:应用名-->
-			    <property name="appName" value="${appName}"></property>
-			    <!--可选参数:需要监测异常,ie:DataException-->
-			    <!-- <property name="exceptionInclude" value=""/> -->
-			</bean>
-
-			<!--Metrics配置项-->
-		    <metrics:metric-registry name="metricRegistry" id="metricRegistry"/>
-		    <metrics:health-check-registry id="health"/>
-		    <metrics:annotation-driven metric-registry="metricRegistry"/>
-		    <metrics:reporter type="jmx" id="metricJmxReporter" metric-registry="metricRegistry"/>
-		</beans>
-
-
-	- `exceptionInclude`默认为`Throwable`和`Exception`,有其他需要则请配置
-
-2. 配置日志文件(可选)
-
-		log4j.logger.cn.com.servyou.opmc.agent=debug,opmcRollingFile #如果需要opmc的日志输出,将opmc包的日志级别保持为debug
-		log4j.appender.opmcRollingFile=org.apache.log4j.RollingFileAppender
-		log4j.appender.opmcRollingFile.File=/Users/linj/Documents/logs/opmc.log #文件存放路径，请更改为实际存放路径
-		log4j.appender.opmcRollingFile.MaxFileSize=20MB
-		log4j.appender.opmcRollingFile.MaxBackupIndex=3
-		log4j.appender.opmcRollingFile.Encoding=UTF-8
-		log4j.appender.opmcRollingFile.Append=true
-		log4j.appender.opmcRollingFile.layout=org.apache.log4j.PatternLayout
-		log4j.appender.opmcRollingFile.layout.ConversionPattern=%d [%-5p] [%t] %c - %m(traceId=%X{traceId})%n
-		log4j.additivity.cn.com.servyou.opmc.agent=false
+            <bean id="opmcConfiguration" class="cn.com.servyou.yypt.opmc.agent.config.Configuration">
+                <property name="enable" value="true"/>
+                <!--opmc生产地址为: http://opmc.dc.servyou-it.com:8001/opmc-web  -->
+                <property name="serverUrl" value="http://opmc.sit.91lyd.com/opmc-web"/>
+                <!--可选参数:应用名-->
+                <property name="appName" value="${xxxx}"/>
+                <!--可选参数:需要监测异常,ie:DataException,不配置则默认抓取所有异常-->
+                <!--<property name="exceptionIncludes" value="QuickQueryToolException"/>-->
+            </bean>
+            <opmc:driven/>
+        </beans>
 
 ## 第三步:配置VM参数
 
@@ -262,14 +225,6 @@ params对应注解方法的参数数组，例子见**FirstInputParamParser**实�
 * 非spring框架下，统计项没有生效
 
 检查用于非spring配置的`aop.xml`文件里的`<weaver options="-verbose">`选项，看它的`include`元素是否包含了需要统计的类所在包
-
-* 远程JMX无法连接
-
-检查应用服务器的启动参数配置，查看是否有`jmxremote`相关的配置，详细参数可见【应用服务器配置】处的说明。
-
-其次检查插件配置文件，例如名为`application-opmc.xml`，查看其中
-
-`<metrics:reporter type="jmx" id="theBeta" metric-registry="metricRegistry"/>`
 
 这段配置的id是否和其他bean有重名。
 
