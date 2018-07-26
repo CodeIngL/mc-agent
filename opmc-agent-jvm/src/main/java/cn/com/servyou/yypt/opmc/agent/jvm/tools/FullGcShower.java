@@ -54,19 +54,17 @@ public class FullGcShower {
             int gcIndex = -1;
             int gcTime = -1;
             int i = 0;
-            while (true) {
-                try {
+            try {
+                while (true) {
                     OptionFormat childFormat = format.getSubFormat(i);
                     if (childFormat instanceof ColumnFormat) {
                         ColumnFormat format1 = (ColumnFormat) childFormat;
                         if (gcIndex == -1 && "^FGC^".equals(format1.getHeader())) {
                             gcIndex = i;
-                            i++;
                             continue;
                         }
                         if (gcTime == -1 && "^FGCT^".equals(format1.getHeader())) {
                             gcTime = i;
-                            i++;
                             continue;
                         }
                         if (gcIndex != -1 && gcTime != -1) {
@@ -74,12 +72,9 @@ public class FullGcShower {
                         }
                     }
                     i++;
-                } catch (ArrayIndexOutOfBoundsException e) {
-                    i = -1;
-                    break;
                 }
-            }
-            if (i == -1) {
+            } catch (ArrayIndexOutOfBoundsException e) {
+                log.error("jstat has's nothing in optionFile,so fullgc collect will work fail", e);
                 return;
             }
             userFormat = new OptionFormat(format.getName());

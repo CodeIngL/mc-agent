@@ -6,6 +6,7 @@ import cn.com.servyou.yypt.opmc.agent.jvm.tools.FullGcShower;
 import cn.com.servyou.yypt.opmc.agent.metric.GarbageCollectorMetric;
 import cn.com.servyou.yypt.opmc.agent.metric.GarbageCollectorMetricProvider;
 import cn.com.servyou.yypt.opmc.agent.metric.GarbageCollectorMetricSnapshot;
+import cn.com.servyou.yypt.opmc.agent.metric.UnknownGarbageCollectorMetric;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -53,6 +54,10 @@ public class GcReporter {
     public void init() {
         initDefault();
         gcShower.init();
+        if (garbageCollectorMetric instanceof UnknownGarbageCollectorMetric){
+            log.info("can't distinguish the gc, so stop gc alert");
+            return;
+        }
         schedualService.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
@@ -82,13 +87,12 @@ public class GcReporter {
             return info;
         }
         String gcStr = gcShower.fetchFGC();
-        if (gcStr == null || "".equals(gcStr)) {
+        if (StringUtils.isEmpty(gcStr)) {
             return info;
         }
         List<String> result = new ArrayList<String>();
-        String[] strs = gcStr.split(" ");
-        for (String str : strs) {
-            if (str != null && !"".equals(str)) {
+        for (String str : gcStr.split(" ")) {
+            if (StringUtils.isNotEmpty(str)) {
                 result.add(str);
             }
         }
