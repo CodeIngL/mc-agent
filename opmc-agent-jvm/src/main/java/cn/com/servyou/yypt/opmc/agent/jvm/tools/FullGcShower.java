@@ -83,8 +83,8 @@ public class FullGcShower {
                 return;
             }
             userFormat = new OptionFormat(format.getName());
-            userFormat.insertSubFormat(0, format.getSubFormat(gcIndex));
-            userFormat.insertSubFormat(1, format.getSubFormat(gcTime));
+            userFormat.addSubFormat(format.getSubFormat(gcIndex));
+            userFormat.addSubFormat(format.getSubFormat(gcTime));
             formatter = new OptionOutputFormatter(monitoredVm, userFormat);
         } catch (Exception e) {
             log.error("jstat have a error", e);
