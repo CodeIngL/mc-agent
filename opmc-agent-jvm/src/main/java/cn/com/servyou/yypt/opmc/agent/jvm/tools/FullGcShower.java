@@ -87,12 +87,15 @@ public class FullGcShower {
             userFormat.insertSubFormat(1, format.getSubFormat(gcTime));
             formatter = new OptionOutputFormatter(monitoredVm, userFormat);
         } catch (Exception e) {
-            log.error("jstat have a error",e);
+            log.error("jstat have a error", e);
         }
     }
 
     public String fetchFGC() {
         try {
+            if (formatter == null) {
+                return null;
+            }
             return formatter.getRow();
         } catch (Exception e) {
             log.error("can't get FGC info", e);
