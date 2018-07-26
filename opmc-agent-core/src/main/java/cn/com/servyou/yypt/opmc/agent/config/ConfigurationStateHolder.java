@@ -8,7 +8,7 @@ import cn.com.servyou.yypt.opmc.agent.event.AvailableEvent;
 import cn.com.servyou.yypt.opmc.agent.event.UnavailableEvent;
 import cn.com.servyou.yypt.opmc.agent.log.Log;
 import cn.com.servyou.yypt.opmc.agent.log.LogFactory;
-import cn.com.servyou.yypt.opmc.agent.util.StringUtils;
+import cn.com.servyou.yypt.opmc.agent.common.util.StringUtils;
 
 
 import java.util.HashMap;

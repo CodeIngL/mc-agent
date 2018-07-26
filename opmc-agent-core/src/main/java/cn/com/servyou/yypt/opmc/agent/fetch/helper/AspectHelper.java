@@ -12,7 +12,7 @@ import cn.com.servyou.yypt.opmc.agent.fetch.divide.DivideParamParser;
 import cn.com.servyou.yypt.opmc.agent.log.Log;
 import cn.com.servyou.yypt.opmc.agent.log.LogFactory;
 import cn.com.servyou.yypt.opmc.agent.util.MethodUtil;
-import cn.com.servyou.yypt.opmc.agent.util.StringUtils;
+import cn.com.servyou.yypt.opmc.agent.common.util.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 
 import java.lang.reflect.Method;

@@ -7,9 +7,7 @@ import cn.com.servyou.yypt.opmc.agent.data.metrics.MetricsDelegate;
 import com.codahale.metrics.SharedMetricRegistries;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.SpringApplicationRunListener;
-import org.springframework.context.ApplicationListener;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.event.SimpleApplicationEventMulticaster;
 import org.springframework.core.env.ConfigurableEnvironment;
 
 import static cn.com.servyou.yypt.opmc.agent.constant.OpmcConfigConstants.CLASS_INTERNAL_CONFIGURATION;

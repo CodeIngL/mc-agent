@@ -6,7 +6,7 @@ import cn.com.servyou.opmc.agent.conf.init.Initializer;
 import cn.com.servyou.opmc.agent.conf.manager.ConfManager;
 import cn.com.servyou.yypt.opmc.agent.log.Log;
 import cn.com.servyou.yypt.opmc.agent.log.LogFactory;
-import cn.com.servyou.yypt.opmc.agent.util.StringUtils;
+import cn.com.servyou.yypt.opmc.agent.common.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;

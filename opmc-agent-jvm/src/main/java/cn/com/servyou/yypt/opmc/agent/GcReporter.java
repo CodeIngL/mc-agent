@@ -1,5 +1,7 @@
 package cn.com.servyou.yypt.opmc.agent;
 
+import cn.com.servyou.yypt.opmc.agent.common.NamedThreadFactory;
+import cn.com.servyou.yypt.opmc.agent.common.util.StringUtils;
 import cn.com.servyou.yypt.opmc.agent.jvm.tools.FullGcShower;
 import cn.com.servyou.yypt.opmc.agent.metric.GarbageCollectorMetric;
 import cn.com.servyou.yypt.opmc.agent.metric.GarbageCollectorMetricProvider;
@@ -39,26 +41,29 @@ public class GcReporter {
     private long lastSendTime = System.currentTimeMillis();
 
     @Setter
-    private String url = "http://localhost/opmc/gcCollector";
+    private String url;
+
+    @Setter
+    private Long initDelayMs = -1L;
+
+    @Setter
+    private Long periodMs = -1L;
 
     @PostConstruct
     public void init() {
-        String goalUrl = System.getProperty("opmc.fullgc.url");
-        if (goalUrl != null && !"".equals(goalUrl)) {
-            url = goalUrl;
-        }
+        initDefault();
         gcShower.init();
         schedualService.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
                 try {
                     Long currentTimeMillis = System.currentTimeMillis();
+                    boolean collected = false;
                     if (currentTimeMillis - lastSendTime > 600000L) {
-                        postForm(url, fgcInfo(true), "UTF-8");
                         lastSendTime = currentTimeMillis;
-                    } else {
-                        postForm(url, fgcInfo(false), "UTF-8");
+                        collected = true;
                     }
+                    postForm(url, fgcInfo(collected), "UTF-8");
                 } catch (IOException e) {
                     log.warn("something wrong happen", e);
                 }
@@ -95,9 +100,40 @@ public class GcReporter {
         return info;
     }
 
+    private void initDefault() {
+        final String FULLGC_URL = "opmc.fullgc.url";
+        final String GC_INIT_DELAY_MS = "opmc.gc.init.delay.ms";
+        final String GC_PERIOD_MS = "opmc.gc.period.ms";
+        String goalUrl = System.getProperty(FULLGC_URL);
+        if (StringUtils.isNotEmpty(goalUrl)) {
+            url = goalUrl;
+        }
+        String initDelay = System.getProperty(GC_INIT_DELAY_MS);
+        if (StringUtils.isNotEmpty(initDelay)) {
+            try {
+                initDelayMs = Long.valueOf(initDelay);
+            } catch (Exception e) {
+                if (initDelayMs < 0) {
+                    initDelayMs = GC_SEND_INIT_DELAY_MS;
+                }
+            }
+        }
+        String period = System.getProperty(GC_PERIOD_MS);
+        if (StringUtils.isNotEmpty(period)) {
+            periodMs = Long.valueOf(period);
+            try {
+                periodMs = Long.valueOf(initDelay);
+            } catch (Exception e) {
+                if (periodMs < 0) {
+                    periodMs = GC_SEND_BETWEEN_PERIOD_MS;
+                }
+            }
+        }
+    }
+
     private static final int DEFAULT_TIME_OUT = 5000;
 
-    public static void postForm(String url, Map formMap, String encoding) throws IOException {
+    private static void postForm(String url, Map formMap, String encoding) throws IOException {
         HttpURLConnection conn = null;
         try {
             conn = getConnection("POST", url, encoding);

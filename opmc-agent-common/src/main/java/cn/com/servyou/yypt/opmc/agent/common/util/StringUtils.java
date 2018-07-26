@@ -1,4 +1,4 @@
-package cn.com.servyou.yypt.opmc.agent.util;
+package cn.com.servyou.yypt.opmc.agent.common.util;
 
 /**
  * <p>Description: </p>

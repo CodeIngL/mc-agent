@@ -2,7 +2,7 @@ package cn.com.servyou.yypt.opmc.agent.entity;
 
 import cn.com.servyou.yypt.opmc.agent.fetch.annotation.define.DivideParamGetType;
 import cn.com.servyou.yypt.opmc.agent.fetch.divide.DivideParamParser;
-import cn.com.servyou.yypt.opmc.agent.util.StringUtils;
+import cn.com.servyou.yypt.opmc.agent.common.util.StringUtils;
 
 /**
  * <p>Function: [功能模块：明细统计的配置项实体]</p>

@@ -3,12 +3,14 @@ package cn.com.servyou.yypt.opmc.agent.task;
 import cn.com.servyou.opmc.agent.conf.annotation.ConfigAnnotation;
 import cn.com.servyou.opmc.agent.conf.context.ApplicationEvent;
 import cn.com.servyou.opmc.agent.conf.context.ApplicationListener;
+import cn.com.servyou.yypt.opmc.agent.common.NamedThreadFactory;
 import cn.com.servyou.yypt.opmc.agent.constant.OpmcConfigConstants;
 import cn.com.servyou.yypt.opmc.agent.event.AvailableEvent;
 import cn.com.servyou.yypt.opmc.agent.task.reporter.KeyCacheReporter;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -29,7 +31,7 @@ public class KeyCacheReportStarter implements ApplicationListener {
     /**
      * 执行器
      */
-    private static ScheduledExecutorService schedualService = Executors.newScheduledThreadPool(1);
+    private static ScheduledExecutorService schedualService = new ScheduledThreadPoolExecutor(1,new NamedThreadFactory("opmc-kcc"));
 
     /**
      * 延迟时间,时间单位为毫秒。等价于5S

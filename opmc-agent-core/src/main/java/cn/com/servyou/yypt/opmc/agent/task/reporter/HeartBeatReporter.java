@@ -7,7 +7,7 @@ import cn.com.servyou.yypt.opmc.agent.data.cache.SystemPropertiesRegistry;
 import cn.com.servyou.yypt.opmc.agent.log.Log;
 import cn.com.servyou.yypt.opmc.agent.log.LogFactory;
 import cn.com.servyou.yypt.opmc.agent.util.HttpUtils;
-import cn.com.servyou.yypt.opmc.agent.util.StringUtils;
+import cn.com.servyou.yypt.opmc.agent.common.util.StringUtils;
 
 import java.io.IOException;
 import java.util.HashMap;

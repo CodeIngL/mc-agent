@@ -2,7 +2,7 @@ package cn.com.servyou.yypt.opmc.agent.data.cache;
 
 import cn.com.servyou.yypt.opmc.agent.log.Log;
 import cn.com.servyou.yypt.opmc.agent.log.LogFactory;
-import cn.com.servyou.yypt.opmc.agent.util.StringUtils;
+import cn.com.servyou.yypt.opmc.agent.common.util.StringUtils;
 
 import java.net.InetAddress;
 import java.net.NetworkInterface;

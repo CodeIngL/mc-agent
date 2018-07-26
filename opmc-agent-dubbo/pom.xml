@@ -11,6 +11,10 @@
 
     <artifactId>opmc-agent-dubbo</artifactId>
 
+    <properties>
+        <dubbo.verion>2.5.3</dubbo.verion>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>cn.com.servyou</groupId>
@@ -19,7 +23,7 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>dubbo</artifactId>
-            <version>2.5.3</version>
+            <version>${dubbo.verion}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.springframework</groupId>

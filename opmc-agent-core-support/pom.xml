@@ -11,6 +11,10 @@
 
     <artifactId>opmc-agent-core-support</artifactId>
 
+    <properties>
+        <servlet.verions>3.0.1</servlet.verions>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>cn.com.servyou</groupId>
@@ -21,16 +25,14 @@
             <artifactId>aspectjrt</artifactId>
         </dependency>
         <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <version>3.0.1</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-all</artifactId>
         </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>${servlet.verions}</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
-
-
 </project>

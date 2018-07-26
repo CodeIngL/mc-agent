@@ -3,11 +3,13 @@ package cn.com.servyou.yypt.opmc.agent.task;
 import cn.com.servyou.opmc.agent.conf.annotation.ConfigAnnotation;
 import cn.com.servyou.opmc.agent.conf.context.ApplicationEvent;
 import cn.com.servyou.opmc.agent.conf.context.ApplicationListener;
+import cn.com.servyou.yypt.opmc.agent.common.NamedThreadFactory;
 import cn.com.servyou.yypt.opmc.agent.event.AvailableEvent;
 import cn.com.servyou.yypt.opmc.agent.task.reporter.HeartBeatReporter;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import static cn.com.servyou.yypt.opmc.agent.constant.OpmcConfigConstants.CLASS_INTERNAL_HEART_BEAT_REPORTER;
@@ -37,7 +39,7 @@ public class HeartBeatReportStarter implements ApplicationListener {
     /**
      * 执行器
      */
-    private static ScheduledExecutorService schedualService = Executors.newScheduledThreadPool(1);
+    private static ScheduledExecutorService schedualService = new ScheduledThreadPoolExecutor(1, new NamedThreadFactory("opmc-hbt"));
 
     /**
      * 心跳报告器实例

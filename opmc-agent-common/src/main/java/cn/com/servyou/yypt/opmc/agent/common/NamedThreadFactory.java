@@ -1,4 +1,4 @@
-package cn.com.servyou.yypt.opmc.agent;
+package cn.com.servyou.yypt.opmc.agent.common;
 
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;

@@ -14,11 +14,25 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <junit.version>4.12</junit.version>
-        <slf4j.version>1.7.21</slf4j.version>
         <lombok.version>1.16.8</lombok.version>
         <groovy.eclipse.compile.version>2.9.1-01</groovy.eclipse.compile.version>
         <groovy.eclipse.batch.version>2.3.7-01</groovy.eclipse.batch.version>
     </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-all</artifactId>
+        </dependency>
+    </dependencies>
 
     <build>
         <plugins>
@@ -75,18 +89,4 @@
             </plugin>
         </plugins>
     </build>
-
-
-    <dependencies>
-        <!--lombok依赖-->
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.16.8</version>
-        </dependency>
-        <dependency>
-            <groupId>org.codehaus.groovy</groupId>
-            <artifactId>groovy-all</artifactId>
-        </dependency>
-    </dependencies>
 </project>
