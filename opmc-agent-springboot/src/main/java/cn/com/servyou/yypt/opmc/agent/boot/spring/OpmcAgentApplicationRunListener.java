@@ -66,6 +66,7 @@ public class OpmcAgentApplicationRunListener implements SpringApplicationRunList
         conf.setServerUrl(beanConf.getServerUrl());
         conf.setCatchAll(beanConf.isCatchAll());
         conf.getExceptionIncludes().addAll(beanConf.getExceptionIncludes());
+        conf.getExceptionExcludes().addAll(beanConf.getExceptionExcludes());
         if (conf.isEnable()) {
             stateHolder.setContextState(ConfigurationStateHolder.ConfigurationState.AVAILABLE);
         }

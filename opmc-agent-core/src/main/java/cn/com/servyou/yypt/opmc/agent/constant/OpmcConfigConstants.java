@@ -129,6 +129,11 @@ public class OpmcConfigConstants {
     public static final String OPMC_USER_CONFIG_EXCEPTION_INCLUDES = "opmc.user.config.exceptionIncludes";
 
     /**
+     * 异常排除
+     */
+    public static final String OPMC_USER_CONFIG_EXCEPTION_EXCLUDES = "opmc.user.config.exceptionExcludes";
+
+    /**
      * 队列大小
      */
     public static final String OPMC_USER_CONFIG_EXCEPTION_HOLDER_QUEUE_SIZE = "opmc.user.config.exceptionHolderQueueSize";

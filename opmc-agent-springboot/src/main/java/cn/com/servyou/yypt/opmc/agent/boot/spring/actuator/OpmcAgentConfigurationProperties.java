@@ -29,6 +29,8 @@ public class OpmcAgentConfigurationProperties {
 
     Set<String> exceptionIncludes;
 
+    Set<String> exceptionExcludes;
+
     boolean enableMetrics;
 
     boolean catchAll;

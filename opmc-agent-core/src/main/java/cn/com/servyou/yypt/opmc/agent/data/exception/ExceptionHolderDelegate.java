@@ -47,7 +47,7 @@ public class ExceptionHolderDelegate {
         Object[] args = pjp.getArgs();
         for (int i = args.length - 1; i > 0; i--) {
             Object arg = args[i];
-            if (arg == null){
+            if (arg == null) {
                 continue;
             }
             if (arg instanceof Throwable) {
@@ -84,12 +84,16 @@ public class ExceptionHolderDelegate {
         if (!configuration.isEnable()) {
             return false;
         }
-        if (configuration.isCatchAll()){
+        if (configuration.isCatchAll()) {
+            Collection<String> excludes = configuration.getExceptionExcludes();
+            if (excludes != null && excludes.size() > 0) {
+                return !excludes.contains(exceptionName);
+            }
             return true;
         }
         //include优先级较高,如果配置了include,那么只有在include里的才符合需求
         Collection<String> includes = configuration.getExceptionIncludes();
-        if (includes.size() > 0) {
+        if (includes != null && includes.size() > 0) {
             return includes.contains(exceptionName);
         }
         //都没配置的话,通过

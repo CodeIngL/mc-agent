@@ -23,6 +23,11 @@
       "description": "opmc exception that we should catch"
     },
     {
+      "name": "opmc.exceptionExcludes",
+      "type": "java.util.Set<java.lang.String>",
+      "description": "opmc exception that we should exclude"
+    },
+    {
       "name": "opmc.enableMetrics",
       "type": "java.lang.Boolean",
       "description": "opmc exception that we should catch",

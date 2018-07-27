@@ -45,6 +45,12 @@ public class Configuration {
     @ConfigAnnotation(name = OPMC_USER_CONFIG_EXCEPTION_INCLUDES)
     private Set<String> exceptionIncludes = new HashSet<String>();
 
+    /**
+     * 需要监测的异常列表
+     */
+    @ConfigAnnotation(name = OPMC_USER_CONFIG_EXCEPTION_EXCLUDES)
+    private Set<String> exceptionExcludes = new HashSet<String>();
+
 
     @ConfigAnnotation(name = OPMC_USER_CONFIG_CATCH_ALL)
     private boolean catchAll = true;
@@ -89,5 +95,13 @@ public class Configuration {
 
     public void setCatchAll(boolean catchAll) {
         this.catchAll = catchAll;
+    }
+
+    public Collection<String> getExceptionExcludes() {
+        return exceptionExcludes;
+    }
+
+    public void setExceptionExcludes(Set<String> exceptionExcludes) {
+        this.exceptionExcludes = exceptionExcludes;
     }
 }
