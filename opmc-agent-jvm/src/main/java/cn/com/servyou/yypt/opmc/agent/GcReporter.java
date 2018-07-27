@@ -31,7 +31,7 @@ public class GcReporter {
 
     private static final long GC_SEND_INIT_DELAY_MS = 5000;
 
-    private static final long GC_SEND_BETWEEN_PERIOD_MS = 300000;
+    private static final long GC_SEND_BETWEEN_PERIOD_MS = 60000;
 
     private static ScheduledExecutorService schedualService = new ScheduledThreadPoolExecutor(1, new NamedThreadFactory("opmc-fgc"));
 
@@ -54,7 +54,7 @@ public class GcReporter {
     public void init() {
         initDefault();
         gcShower.init();
-        if (garbageCollectorMetric instanceof UnknownGarbageCollectorMetric){
+        if (garbageCollectorMetric instanceof UnknownGarbageCollectorMetric) {
             log.info("can't distinguish the gc, so stop gc alert");
             return;
         }
@@ -64,7 +64,7 @@ public class GcReporter {
                 try {
                     Long currentTimeMillis = System.currentTimeMillis();
                     boolean collected = false;
-                    if (currentTimeMillis - lastSendTime > 600000L) {
+                    if (currentTimeMillis - lastSendTime > 300000L) {
                         lastSendTime = currentTimeMillis;
                         collected = true;
                     }
@@ -73,7 +73,7 @@ public class GcReporter {
                     log.warn("something wrong happen", e);
                 }
             }
-        }, GC_SEND_INIT_DELAY_MS, GC_SEND_BETWEEN_PERIOD_MS, TimeUnit.MILLISECONDS);
+        }, initDelayMs, periodMs, TimeUnit.MILLISECONDS);
     }
 
     private Map<String, String> fgcInfo(boolean collected) {
@@ -117,27 +117,32 @@ public class GcReporter {
             try {
                 initDelayMs = Long.valueOf(initDelay);
             } catch (Exception e) {
-                if (initDelayMs < 0) {
-                    initDelayMs = GC_SEND_INIT_DELAY_MS;
-                }
+                // ignore
             }
+        }
+        if (initDelayMs <= 0) {
+            initDelayMs = GC_SEND_INIT_DELAY_MS;
         }
         String period = System.getProperty(GC_PERIOD_MS);
         if (StringUtils.isNotEmpty(period)) {
             periodMs = Long.valueOf(period);
             try {
-                periodMs = Long.valueOf(initDelay);
+                periodMs = Long.valueOf(period);
             } catch (Exception e) {
-                if (periodMs < 0) {
-                    periodMs = GC_SEND_BETWEEN_PERIOD_MS;
-                }
+                // ignore
             }
+        }
+        if (periodMs <= 0) {
+            periodMs = GC_SEND_BETWEEN_PERIOD_MS;
         }
     }
 
     private static final int DEFAULT_TIME_OUT = 5000;
 
     private static void postForm(String url, Map formMap, String encoding) throws IOException {
+        if (formMap == null || formMap.size() == 0) {
+            return;
+        }
         HttpURLConnection conn = null;
         try {
             conn = getConnection("POST", url, encoding);
