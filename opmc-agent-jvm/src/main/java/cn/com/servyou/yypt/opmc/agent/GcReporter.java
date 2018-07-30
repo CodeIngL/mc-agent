@@ -2,11 +2,10 @@ package cn.com.servyou.yypt.opmc.agent;
 
 import cn.com.servyou.yypt.opmc.agent.common.NamedThreadFactory;
 import cn.com.servyou.yypt.opmc.agent.common.util.StringUtils;
+import cn.com.servyou.yypt.opmc.agent.controller.MemController;
 import cn.com.servyou.yypt.opmc.agent.jvm.tools.FullGcShower;
-import cn.com.servyou.yypt.opmc.agent.metric.GarbageCollectorMetric;
-import cn.com.servyou.yypt.opmc.agent.metric.GarbageCollectorMetricProvider;
-import cn.com.servyou.yypt.opmc.agent.metric.GarbageCollectorMetricSnapshot;
-import cn.com.servyou.yypt.opmc.agent.metric.UnknownGarbageCollectorMetric;
+import cn.com.servyou.yypt.opmc.agent.metric.*;
+import com.sun.corba.se.impl.naming.cosnaming.NamingUtils;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -39,7 +38,9 @@ public class GcReporter {
 
     private GarbageCollectorMetric garbageCollectorMetric = new GarbageCollectorMetricProvider().get();
 
-    private long lastSendTime = System.currentTimeMillis();
+    private GarbageCollectorMetricTimerSnapshot lastTimerSnapshot;
+
+    private long distance = 0;
 
     @Setter
     private String url;
@@ -58,50 +59,69 @@ public class GcReporter {
             log.info("can't distinguish the gc, so stop gc alert");
             return;
         }
+        lastTimerSnapshot = new GarbageCollectorMetricTimerSnapshot(garbageCollectorMetric.getSnapshot());
         schedualService.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
                 try {
-                    Long currentTimeMillis = System.currentTimeMillis();
-                    boolean collected = false;
-                    if (currentTimeMillis - lastSendTime > 300000L) {
-                        lastSendTime = currentTimeMillis;
-                        collected = true;
-                    }
-                    postForm(url, fgcInfo(collected), "UTF-8");
-                } catch (IOException e) {
+                    postForm(url, fgcInfo(), "UTF-8");
+                } catch (Exception e) {
                     log.warn("something wrong happen", e);
                 }
             }
         }, initDelayMs, periodMs, TimeUnit.MILLISECONDS);
     }
 
-    private Map<String, String> fgcInfo(boolean collected) {
-        Map<String, String> info = new HashMap<String, String>();
+    private Map<String, String> fgcInfo() {
         GarbageCollectorMetricSnapshot snapShot = garbageCollectorMetric.getSnapshot();
-        info.put("gcDescription", garbageCollectorMetric.getType().oldGenName());
-        info.put("gcCount", String.valueOf(snapShot.getGcOldCount()));
-        info.put("gcTime", String.valueOf(snapShot.getGcOldTime()));
-        info.put("FGCCollected", String.valueOf(collected));
-        if (!collected) {
-            return info;
+        Long currentOldCount = snapShot.getGcOldCount();
+        if (currentOldCount == lastTimerSnapshot.getGcOldCount()) {
+            return null;
         }
-        String gcStr = gcShower.fetchFGC();
-        if (StringUtils.isEmpty(gcStr)) {
-            return info;
+        Map<String, String> info = new HashMap<String, String>();
+        switch (garbageCollectorMetric.getType()) {
+            case SERIAL:
+                log.warn("the application is using SERIAL gc, are you sure to do what");
+                return null;
+            case G1:
+                log.warn("the application is using in G1 gc, you are advanced. but we didn't prepared to deal with it");
+                return null;
+            case PARALLEL:
+                log.warn("the application is using in PARALLEL gc, but we didn't prepared to deal with it");
+                return null;
+            case CMS:
+                String gcStr = gcShower.fetchFGC();
+                if (StringUtils.isEmpty(gcStr)) {
+                    return info;
+                }
+                List<String> result = new ArrayList<String>();
+                for (String str : gcStr.split(" ")) {
+                    if (StringUtils.isNotEmpty(str)) {
+                        result.add(str);
+                    }
+                }
+                if (result.size() == 0) {
+                    return null;
+                }
+                Long fulCount = Long.valueOf(result.get(0));
+                if (fulCount - currentOldCount > distance) {
+                    distance = fulCount - currentOldCount;
+                    MemController controller = new MemController();
+                    if (controller.canDo()) {
+                        info.put("gcDescription", garbageCollectorMetric.getType().oldGenName());
+                        info.put("gcCount", String.valueOf(snapShot.getGcOldCount()));
+                        info.put("gcTime", String.valueOf(snapShot.getGcOldTime()));
+                        info.put("fullGcCount", result.get(0));
+                        info.put("fullGcTime", result.get(1));
+                        lastTimerSnapshot = new GarbageCollectorMetricTimerSnapshot(snapShot);
+                        return info;
+                    }
+                }
+                break;
+            default:
+                return null;
         }
-        List<String> result = new ArrayList<String>();
-        for (String str : gcStr.split(" ")) {
-            if (StringUtils.isNotEmpty(str)) {
-                result.add(str);
-            }
-        }
-        if (result.size() > 1) {
-            info.put("FGCCount", result.get(0));
-            info.put("FGCTimer", result.get(1));
-        }
-        info.put("FGCDescription", gcStr);
-        return info;
+        return null;
     }
 
     private void initDefault() {
