@@ -19,15 +19,26 @@ opmc-agent是运营平台监控中心的客户端插件，配置简单。
 
 ### 里程功能
 
-1.1-RELEASE存在开关opmc.requestMappingEnabled=false的默认配置,不能为RequestMapping进行统计
+1.1-RELEASE中注解RequestMapping等价于MCTimer
+
+    - Spring的properties的键值对opmc.requestMappingEnabled=true为开启等价的开关,默认为关闭
 
 1.2-RELEASE支持spring更加简化的配置
 
+    - 支持Schema,Spring自定命名空间
+
 1.3-RELEASE增加了异常开关,默认所有的异常进行抓取
+
+    - Configuration类的catchAll=true抓取所有异常，和exceptionExcludes搭配。所用异常中将排除exceptionExcludes指定的异常
+    - Configuration类的catchAll=false不抓取所有异常，和exceptionIncludes搭配。仅抓取exceptionIncludes指定的异常
 
 1.4-RELEASE修复了对logback的支持
 
-1.5-SNAPSHOT引入了FULLGC的支持(尚未RELEASE)
+    - 支持logback日志框架
+
+1.5-RELEASE引入了FULLGC的支持
+
+    - 服务端尚未开发,agent已有相关监测
 
 # 快速开始
 
@@ -35,25 +46,30 @@ opmc-agent是运营平台监控中心的客户端插件，配置简单。
 
 **pom依赖**:
 
-		<!--支持log异常抓取功能(可选)-->
+        <dependencyManagement>
+            <dependencies>
+                <dependency>
+                    <groupId>cn.com.servyou</groupId>
+                    <artifactId>opmc-agent-bom</artifactId>
+                    <version>1.5-RELEASE</version>
+                    <scope>import</scope>
+                    <type>pom</type>
+                </dependency>
+            </dependencies>
+        </dependencyManagement>
+
         <dependency>
             <groupId>cn.com.servyou</groupId>
-            <artifactId>opmc-agent-log</artifactId>
-            <version>1.4-RELEASE</version>
+            <artifactId>opmc-agent-spring</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>cn.com.servyou</groupId>
+            <artifactId>opmc-agent-jvm</artifactId>
+        </dependency>
 		<!--支持dubbo异常抓取功能(可选)-->
         <dependency>
             <groupId>cn.com.servyou</groupId>
             <artifactId>opmc-agent-dubbo</artifactId>
-            <version>1.4-RELEASE</version>
-        </dependency>
-
-		<!--spring支持(spring下必选)-->
-        <dependency>
-            <groupId>cn.com.servyou</groupId>
-            <artifactId>opmc-agent-spring</artifactId>
-            <version>1.4-RELEASE</version>
         </dependency>
 
 
@@ -74,8 +90,11 @@ opmc-agent是运营平台监控中心的客户端插件，配置简单。
                 <property name="serverUrl" value="http://opmc.sit.91lyd.com/opmc-web"/>
                 <!--可选参数:应用名-->
                 <property name="appName" value="${xxxx}"/>
-                <!--可选参数:需要监测异常,ie:DataException,不配置则默认抓取所有异常-->
-                <!--<property name="exceptionIncludes" value="QuickQueryToolException"/>-->
+                <property name="catchAll" value="true"/>
+                <!--可选参数:程序全部抓取模式下,用户指定需要排除的异常,ie:BusinessException-->
+                <property name="exceptionExcludes" value="BusinessException"/>
+                <!--可选参数:程序全部不抓取模式下,用户指定需要抓取的异常,ie:BusinessException-->
+                <property name="exceptionIncludes" value="BusinessException"/>
             </bean>
             <opmc:driven/>
         </beans>
@@ -97,8 +116,6 @@ opmc-agent是运营平台监控中心的客户端插件，配置简单。
     JAVA_OPTS="$JAVA_OPTS -Djava.rmi.server.hostname=${本机ip}"
 
 **请把本机ip替换成你的机器IP**
-
-*注1：jmx端口默认是18090，如果你需要改动，可以自己覆盖。非此端口需要和基础架构组说明*
 
 -----
 
