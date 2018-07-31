@@ -59,8 +59,8 @@ public class ExceptionHolderDelegate {
                 //如果参数是异常类型的,处理这个异常
                 if (exceptionMatchedInRule(arg.getClass().getSimpleName())) {
                     exceptionHolderRegistry.put(new ExceptionHolder((Throwable) arg, System.currentTimeMillis()));
-                    return;
                 }
+                return;
             }
         }
         if (nestedArgs == null || nestedArgs.length == 0) {
@@ -75,8 +75,8 @@ public class ExceptionHolderDelegate {
                 //如果参数是异常类型的,处理这个异常
                 if (exceptionMatchedInRule(arg.getClass().getSimpleName())) {
                     exceptionHolderRegistry.put(new ExceptionHolder((Throwable) arg, System.currentTimeMillis()));
-                    return;
                 }
+                return;
             }
         }
     }
