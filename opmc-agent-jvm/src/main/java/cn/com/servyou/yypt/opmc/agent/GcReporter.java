@@ -40,7 +40,7 @@ public class GcReporter {
 
     private GarbageCollectorMetricTimerSnapshot lastTimerSnapshot;
 
-    private long distance = 0;
+    private long lastFullGcCount = 0;
 
     @Setter
     private String url;
@@ -104,8 +104,8 @@ public class GcReporter {
                     return null;
                 }
                 Long fulCount = Long.valueOf(result.get(0));
-                if (fulCount - currentOldCount > distance) {
-                    distance = fulCount - currentOldCount;
+                if (fulCount > lastFullGcCount) {
+                    lastFullGcCount = fulCount;
                     MemController controller = new MemController();
                     if (controller.canDo()) {
                         info.put("gcDescription", garbageCollectorMetric.getType().oldGenName());
