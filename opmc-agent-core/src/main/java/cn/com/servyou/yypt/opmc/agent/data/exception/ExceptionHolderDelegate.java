@@ -45,8 +45,29 @@ public class ExceptionHolderDelegate {
     public void catchExceptionFromProceedingJoinPoint(ProceedingJoinPoint pjp) {
         //获取异常拦截器的参数,循环其参数,获取其Exception类型的参数,进行下一步的操作
         Object[] args = pjp.getArgs();
+        Object[] nestedArgs = null;
         for (int i = args.length - 1; i > 0; i--) {
             Object arg = args[i];
+            if (arg == null) {
+                continue;
+            }
+            if (i == args.length - 1 && arg instanceof Object[]) {
+                nestedArgs = (Object[]) arg;
+                break;
+            }
+            if (arg instanceof Throwable) {
+                //如果参数是异常类型的,处理这个异常
+                if (exceptionMatchedInRule(arg.getClass().getSimpleName())) {
+                    exceptionHolderRegistry.put(new ExceptionHolder((Throwable) arg, System.currentTimeMillis()));
+                    return;
+                }
+            }
+        }
+        if (nestedArgs == null || nestedArgs.length == 0) {
+            return;
+        }
+        for (int i = nestedArgs.length - 1; i > 0; i--) {
+            Object arg = nestedArgs[i];
             if (arg == null) {
                 continue;
             }
