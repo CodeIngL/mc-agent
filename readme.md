@@ -19,9 +19,10 @@ opmc-agent是运营平台监控中心的客户端插件，配置简单。
 
 ### 里程功能
 
-1.1-RELEASE中注解RequestMapping等价于MCTimer
+1.1-RELEASE中注解RequestMapping等价于注解MCTimer
 
-    - Spring的properties的键值对opmc.requestMappingEnabled=true为开启等价的开关,默认为关闭
+    - Spring的properties的键值对opmc.requestMappingEnabled=true为开启等价的开关,默认为关闭。
+    - 我们希望能够手动的在你想要监控的方法上添加@MCTimer注解,而不是一键开启。
 
 1.2-RELEASE支持spring更加简化的配置
 
@@ -44,7 +45,7 @@ opmc-agent是运营平台监控中心的客户端插件，配置简单。
 
 ## 第一步:选择合适依赖
 
-**pom依赖**:
+pom中添加:
 
         <dependencyManagement>
             <dependencies>
@@ -58,6 +59,8 @@ opmc-agent是运营平台监控中心的客户端插件，配置简单。
             </dependencies>
         </dependencyManagement>
 
+dependencies中添加:
+
         <dependency>
             <groupId>cn.com.servyou</groupId>
             <artifactId>opmc-agent-spring</artifactId>
@@ -66,7 +69,7 @@ opmc-agent是运营平台监控中心的客户端插件，配置简单。
             <groupId>cn.com.servyou</groupId>
             <artifactId>opmc-agent-jvm</artifactId>
         </dependency>
-		<!--支持dubbo异常抓取功能(可选)-->
+        <!--支持dubbo异常抓取功能(可选)-->
         <dependency>
             <groupId>cn.com.servyou</groupId>
             <artifactId>opmc-agent-dubbo</artifactId>
@@ -226,14 +229,6 @@ params对应注解方法的参数数组，例子见**FirstInputParamParser**实�
 ---
 
 ### 常见问题说明 ###
-
-* 插件无效
-
-检查配置文件的`enabled`选项，是否配置为`true`
-
-* 方法上加了注解，监控统计却没有生效
-
-检查插件配置文件的`basePackage`选项，是否有包含方法所在类。
 
 * 无法抓取Controller层的异常
 
