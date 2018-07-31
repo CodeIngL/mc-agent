@@ -223,11 +223,17 @@ public class ConfManager {
         }
         if (cls.isAssignableFrom(List.class)) {
             List<String> list = new ArrayList<String>();
+            if (value == null) {
+                return list;
+            }
             Collections.addAll(list, value.split(","));
             return list;
         }
         if (cls.isAssignableFrom(Set.class)) {
             Set<String> set = new HashSet<String>();
+            if (value == null) {
+                return set;
+            }
             Collections.addAll(set, value.split(","));
             return set;
         }
