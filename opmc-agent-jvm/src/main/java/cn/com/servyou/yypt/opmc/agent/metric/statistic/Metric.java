@@ -17,6 +17,8 @@ public interface Metric {
 
     void addCount();
 
+    void addCount(long count);
+
     Window[] windows();
 
     long previousWindowCount();

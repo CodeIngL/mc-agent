@@ -5,6 +5,8 @@ import cn.com.servyou.yypt.opmc.agent.common.util.StringUtils;
 import cn.com.servyou.yypt.opmc.agent.controller.MemController;
 import cn.com.servyou.yypt.opmc.agent.jvm.tools.FullGcShower;
 import cn.com.servyou.yypt.opmc.agent.metric.*;
+import cn.com.servyou.yypt.opmc.agent.metric.statistic.ArrayMetric;
+import cn.com.servyou.yypt.opmc.agent.metric.statistic.Metric;
 import com.sun.corba.se.impl.naming.cosnaming.NamingUtils;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -41,6 +43,8 @@ public class GcReporter {
     private GarbageCollectorMetricTimerSnapshot lastTimerSnapshot;
 
     private long lastFullGcCount = 0;
+
+    private transient Metric rollingCounterInTenMinute = new ArrayMetric(10000, 2 * 600);
 
     @Setter
     private String url;
@@ -79,20 +83,23 @@ public class GcReporter {
             return null;
         }
         Map<String, String> info = new HashMap<String, String>();
+        for (int i = 0; i < lastTimerSnapshot.getGcOldCount() - currentOldCount; i++) {
+            rollingCounterInTenMinute.addCount();
+        }
         switch (garbageCollectorMetric.getType()) {
             case SERIAL:
                 log.warn("the application is using SERIAL gc, are you sure to do what");
-                return null;
+                break;
             case G1:
                 log.warn("the application is using in G1 gc, you are advanced. but we didn't prepared to deal with it");
-                return null;
+                break;
             case PARALLEL:
                 log.warn("the application is using in PARALLEL gc, but we didn't prepared to deal with it");
-                return null;
+                break;
             case CMS:
                 String gcStr = gcShower.fetchFGC();
                 if (StringUtils.isEmpty(gcStr)) {
-                    return info;
+                    break;
                 }
                 List<String> result = new ArrayList<String>();
                 for (String str : gcStr.split(" ")) {
@@ -101,7 +108,7 @@ public class GcReporter {
                     }
                 }
                 if (result.size() == 0) {
-                    return null;
+                    break;
                 }
                 Long fulCount = Long.valueOf(result.get(0));
                 if (fulCount > lastFullGcCount) {
@@ -117,9 +124,15 @@ public class GcReporter {
                         return info;
                     }
                 }
-                break;
             default:
-                return null;
+                break;
+        }
+        if (rollingCounterInTenMinute.count() > 20) {
+            info.put("gcDescription", garbageCollectorMetric.getType().oldGenName());
+            info.put("gcCount", String.valueOf(snapShot.getGcOldCount()));
+            info.put("gcTime", String.valueOf(snapShot.getGcOldTime()));
+            info.put("fullGcCount", "-1");
+            return info;
         }
         return null;
     }

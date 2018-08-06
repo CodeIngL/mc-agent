@@ -49,6 +49,12 @@ public class ArrayMetric implements Metric {
     }
 
     @Override
+    public void addCount(long count) {
+        WindowWrap<Window> wrap = data.currentWindow();
+        wrap.value().addCount(count);
+    }
+
+    @Override
     public long previousWindowCount() {
         WindowWrap<Window> wrap = data.currentWindow();
         wrap = data.getPreviousWindow();

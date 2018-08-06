@@ -23,4 +23,8 @@ public class Window {
     public void addCount() {
         count.add(1L);
     }
+
+    public void addCount(long count) {
+        this.count.add(count);
+    }
 }
