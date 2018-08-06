@@ -1,13 +1,13 @@
 package cn.com.servyou.yypt.opmc.agent;
 
 import cn.com.servyou.yypt.opmc.agent.common.NamedThreadFactory;
+import cn.com.servyou.yypt.opmc.agent.common.SystemPropertiesRegistry;
 import cn.com.servyou.yypt.opmc.agent.common.util.StringUtils;
 import cn.com.servyou.yypt.opmc.agent.controller.MemController;
 import cn.com.servyou.yypt.opmc.agent.jvm.tools.FullGcShower;
 import cn.com.servyou.yypt.opmc.agent.metric.*;
 import cn.com.servyou.yypt.opmc.agent.metric.statistic.ArrayMetric;
 import cn.com.servyou.yypt.opmc.agent.metric.statistic.Metric;
-import com.sun.corba.se.impl.naming.cosnaming.NamingUtils;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -46,6 +46,8 @@ public class GcReporter {
 
     private transient Metric rollingCounterInTenMinute = new ArrayMetric(10000, 2 * 600);
 
+    private final String hostName = SystemPropertiesRegistry.getHostName();
+
     @Setter
     private String url;
 
@@ -83,6 +85,7 @@ public class GcReporter {
             return null;
         }
         Map<String, String> info = new HashMap<String, String>();
+        info.put("hostName", hostName);
         for (int i = 0; i < lastTimerSnapshot.getGcOldCount() - currentOldCount; i++) {
             rollingCounterInTenMinute.addCount();
         }

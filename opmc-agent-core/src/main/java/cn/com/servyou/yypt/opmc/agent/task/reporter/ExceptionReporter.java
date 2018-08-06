@@ -1,10 +1,10 @@
 package cn.com.servyou.yypt.opmc.agent.task.reporter;
 
 import cn.com.servyou.opmc.agent.conf.annotation.ConfigAnnotation;
+import cn.com.servyou.yypt.opmc.agent.common.SystemPropertiesRegistry;
 import cn.com.servyou.yypt.opmc.agent.config.Configuration;
 import cn.com.servyou.yypt.opmc.agent.constant.Constants;
 import cn.com.servyou.yypt.opmc.agent.data.exception.ExceptionHolderRegistry;
-import cn.com.servyou.yypt.opmc.agent.data.cache.SystemPropertiesRegistry;
 import cn.com.servyou.yypt.opmc.agent.data.exception.ExceptionHolder;
 import cn.com.servyou.yypt.opmc.agent.log.Log;
 import cn.com.servyou.yypt.opmc.agent.log.LogFactory;
@@ -48,9 +48,9 @@ public class ExceptionReporter implements Runnable {
      */
     private static final Long EXCEPTION_CAUGHT_MAP_RECORD_EXPIRE_TIME_MILLS = 30000L;
 
-    private static final String IPS = SystemPropertiesRegistry.getAllIp();
+    private final String IPS = SystemPropertiesRegistry.getAllIp();
 
-    private static final String HOST_NAME = SystemPropertiesRegistry.getHostName();
+    private final String HOST_NAME = SystemPropertiesRegistry.getHostName();
 
     /**
      * 格式化

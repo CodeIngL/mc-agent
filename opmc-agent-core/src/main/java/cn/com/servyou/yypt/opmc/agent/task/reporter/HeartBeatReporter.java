@@ -2,9 +2,9 @@ package cn.com.servyou.yypt.opmc.agent.task.reporter;
 
 import cn.com.servyou.opmc.agent.conf.annotation.ConfigAnnotation;
 import cn.com.servyou.yypt.opmc.agent.Version;
+import cn.com.servyou.yypt.opmc.agent.common.SystemPropertiesRegistry;
 import cn.com.servyou.yypt.opmc.agent.config.Configuration;
 import cn.com.servyou.yypt.opmc.agent.constant.Constants;
-import cn.com.servyou.yypt.opmc.agent.data.cache.SystemPropertiesRegistry;
 import cn.com.servyou.yypt.opmc.agent.log.Log;
 import cn.com.servyou.yypt.opmc.agent.log.LogFactory;
 import cn.com.servyou.yypt.opmc.agent.util.HttpUtils;
@@ -41,6 +41,11 @@ public class HeartBeatReporter implements Runnable {
     static final String version = Version.getVersion();
 
     /**
+     * hostName
+     */
+    private final String hostName = SystemPropertiesRegistry.getHostName();
+
+    /**
      *
      */
     @ConfigAnnotation(name = CLASS_INTERNAL_CONFIGURATION)
@@ -53,7 +58,7 @@ public class HeartBeatReporter implements Runnable {
      */
     private Map<String, String> getHeartBeatMap() {
         HashMap<String, String> heartBeatMap = new HashMap<String, String>();
-        heartBeatMap.put(Constants.HOST_NAME, SystemPropertiesRegistry.getHostName());
+        heartBeatMap.put(Constants.HOST_NAME, this.hostName);
         heartBeatMap.put(Constants.VERSION, version);
         String appName = configuration.getAppName();
         //appName在不为空的时候才放入心跳map中，为了避免心跳map形成类似{appName=null, hostName=server1}这种形式

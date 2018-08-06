@@ -1,7 +1,5 @@
-package cn.com.servyou.yypt.opmc.agent.data.cache;
+package cn.com.servyou.yypt.opmc.agent.common;
 
-import cn.com.servyou.yypt.opmc.agent.log.Log;
-import cn.com.servyou.yypt.opmc.agent.log.LogFactory;
 import cn.com.servyou.yypt.opmc.agent.common.util.StringUtils;
 
 import java.net.InetAddress;
@@ -23,37 +21,14 @@ import java.util.Properties;
  */
 public class SystemPropertiesRegistry {
 
-    private static final Log LOGGER = LogFactory.getLog(SystemPropertiesRegistry.class);
-
     /**
      * 系统属性
      */
-    private static Properties systemProperties = null;
-    /**
-     * InetAddress实例
-     */
-    private static InetAddress inetAddress = null;
+    private static final Properties systemProperties = System.getProperties();
     /**
      * jmx远程端口的属性名
      */
     private static final String JMX_REMOTE_PORT_KEY = "com.sun.management.jmxremote.port";
-    /**
-     * jmx端口
-     */
-    private static String jmxPort;
-
-    /**
-     * 初始化时获取系统属性, systemProperties jmxPort inetAddress
-     */
-    static {
-        systemProperties = System.getProperties();
-        jmxPort = systemProperties.getProperty(JMX_REMOTE_PORT_KEY);
-        try {
-            inetAddress = InetAddress.getLocalHost();
-        } catch (UnknownHostException e) {
-            LOGGER.error("", e);
-        }
-    }
 
     /**
      * 获取主机名
@@ -69,7 +44,11 @@ public class SystemPropertiesRegistry {
         }
         //如果都是空,那么就以inetAddress来获取hostName
         if (StringUtils.isEmpty(hostName)) {
-            hostName = inetAddress.getHostName();
+            try {
+                hostName = InetAddress.getLocalHost().getHostName();
+            } catch (UnknownHostException e) {
+                //ignore；
+            }
         }
         return hostName;
     }
@@ -92,13 +71,12 @@ public class SystemPropertiesRegistry {
                 }
             }
         } catch (SocketException ex) {
-            LOGGER.error("", ex);
         }
         return builder.toString();
     }
 
     public static String getJmxPort() {
-        return jmxPort;
+        return systemProperties.getProperty(JMX_REMOTE_PORT_KEY);
     }
 
 }
