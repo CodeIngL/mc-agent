@@ -35,6 +35,11 @@ public class Constants {
     public static final String APP_NAME = "appName";
 
     /**
+     * 心跳版本
+     */
+    public static final String VERSION = "version";
+
+    /**
      * 异常发生的主机ip
      */
     public static final String EXCEPTION_KEY_IP = "ip";

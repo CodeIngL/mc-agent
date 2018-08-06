@@ -1,6 +1,7 @@
 package cn.com.servyou.yypt.opmc.agent.task.reporter;
 
 import cn.com.servyou.opmc.agent.conf.annotation.ConfigAnnotation;
+import cn.com.servyou.yypt.opmc.agent.Version;
 import cn.com.servyou.yypt.opmc.agent.config.Configuration;
 import cn.com.servyou.yypt.opmc.agent.constant.Constants;
 import cn.com.servyou.yypt.opmc.agent.data.cache.SystemPropertiesRegistry;
@@ -35,6 +36,11 @@ public class HeartBeatReporter implements Runnable {
     private static final String HEART_BEAT_URL = "/heart/beat";
 
     /**
+     * 版本号
+     */
+    static final String version = Version.getVersion();
+
+    /**
      *
      */
     @ConfigAnnotation(name = CLASS_INTERNAL_CONFIGURATION)
@@ -48,6 +54,7 @@ public class HeartBeatReporter implements Runnable {
     private Map<String, String> getHeartBeatMap() {
         HashMap<String, String> heartBeatMap = new HashMap<String, String>();
         heartBeatMap.put(Constants.HOST_NAME, SystemPropertiesRegistry.getHostName());
+        heartBeatMap.put(Constants.VERSION, version);
         String appName = configuration.getAppName();
         //appName在不为空的时候才放入心跳map中，为了避免心跳map形成类似{appName=null, hostName=server1}这种形式
         //造成在postForm封装数据的时候，由于第一个参数appName就是空，便跳出循环，那么hostName就不会被封装到待发送的数据里了。
