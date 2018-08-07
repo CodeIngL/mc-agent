@@ -32,7 +32,7 @@ public class GcReporter {
 
     private static final long GC_SEND_INIT_DELAY_MS = 5000;
 
-    private static final long GC_SEND_BETWEEN_PERIOD_MS = 60000;
+    private static final long GC_SEND_BETWEEN_PERIOD_MS = 20000;
 
     private static ScheduledExecutorService schedualService = new ScheduledThreadPoolExecutor(1, new NamedThreadFactory("opmc-fgc"));
 
@@ -43,8 +43,6 @@ public class GcReporter {
     private GarbageCollectorMetricTimerSnapshot lastTimerSnapshot;
 
     private long lastFullGcCount = 0;
-
-    private transient Metric rollingCounterInTenMinute = new ArrayMetric(10000, 2 * 600);
 
     private final String hostName = SystemPropertiesRegistry.getHostName();
 
@@ -84,60 +82,33 @@ public class GcReporter {
         if (currentOldCount == lastTimerSnapshot.getGcOldCount()) {
             return null;
         }
+        String gcStr = gcShower.fetchFGC();
+        if (StringUtils.isEmpty(gcStr)) {
+            return null;
+        }
+        List<String> result = new ArrayList<String>();
+        for (String str : gcStr.split(" ")) {
+            if (StringUtils.isNotEmpty(str)) {
+                result.add(str);
+            }
+        }
+        if (result.size() == 0) {
+            return null;
+        }
+        Long fulCount = Long.valueOf(result.get(0).trim());
+        if (fulCount <= lastFullGcCount) {
+            return null;
+        }
+        lastFullGcCount = fulCount;
         Map<String, String> info = new HashMap<String, String>();
         info.put("hostName", hostName);
-        for (int i = 0; i < lastTimerSnapshot.getGcOldCount() - currentOldCount; i++) {
-            rollingCounterInTenMinute.addCount();
-        }
-        switch (garbageCollectorMetric.getType()) {
-            case SERIAL:
-                log.warn("the application is using SERIAL gc, are you sure to do what");
-                break;
-            case G1:
-                log.warn("the application is using in G1 gc, you are advanced. but we didn't prepared to deal with it");
-                break;
-            case PARALLEL:
-                log.warn("the application is using in PARALLEL gc, but we didn't prepared to deal with it");
-                break;
-            case CMS:
-                String gcStr = gcShower.fetchFGC();
-                if (StringUtils.isEmpty(gcStr)) {
-                    break;
-                }
-                List<String> result = new ArrayList<String>();
-                for (String str : gcStr.split(" ")) {
-                    if (StringUtils.isNotEmpty(str)) {
-                        result.add(str);
-                    }
-                }
-                if (result.size() == 0) {
-                    break;
-                }
-                Long fulCount = Long.valueOf(result.get(0));
-                if (fulCount > lastFullGcCount) {
-                    lastFullGcCount = fulCount;
-                    MemController controller = new MemController();
-                    if (controller.canDo()) {
-                        info.put("gcDescription", garbageCollectorMetric.getType().oldGenName());
-                        info.put("gcCount", String.valueOf(snapShot.getGcOldCount()));
-                        info.put("gcTime", String.valueOf(snapShot.getGcOldTime()));
-                        info.put("fullGcCount", result.get(0));
-                        info.put("fullGcTime", result.get(1));
-                        lastTimerSnapshot = new GarbageCollectorMetricTimerSnapshot(snapShot);
-                        return info;
-                    }
-                }
-            default:
-                break;
-        }
-        if (rollingCounterInTenMinute.count() > 20) {
-            info.put("gcDescription", garbageCollectorMetric.getType().oldGenName());
-            info.put("gcCount", String.valueOf(snapShot.getGcOldCount()));
-            info.put("gcTime", String.valueOf(snapShot.getGcOldTime()));
-            info.put("fullGcCount", "-1");
-            return info;
-        }
-        return null;
+        info.put("gcDescription", garbageCollectorMetric.getType().oldGenName());
+        info.put("gcCount", String.valueOf(snapShot.getGcOldCount()));
+        info.put("gcTime", String.valueOf(snapShot.getGcOldTime()));
+        info.put("fullGcCount", result.get(0));
+        info.put("fullGcTime", result.get(1));
+        lastTimerSnapshot = new GarbageCollectorMetricTimerSnapshot(snapShot);
+        return info;
     }
 
     private void initDefault() {
