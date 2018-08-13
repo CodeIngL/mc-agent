@@ -132,7 +132,6 @@ public class GcReporter {
         }
         String period = System.getProperty(GC_PERIOD_MS);
         if (StringUtils.isNotEmpty(period)) {
-            periodMs = Long.valueOf(period);
             try {
                 periodMs = Long.valueOf(period);
             } catch (Exception e) {
@@ -173,6 +172,9 @@ public class GcReporter {
             out.write(postData.toString().getBytes(encoding));
             out.flush();
             out.close();
+            conn.setConnectTimeout(5000);
+            conn.setReadTimeout(5000);
+            conn.getResponseCode();
         } finally {
             if (conn != null) {
                 conn.disconnect();
