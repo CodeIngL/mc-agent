@@ -24,7 +24,7 @@
     </developers>
     <groupId>cn.com.servyou</groupId>
     <artifactId>opmc-agent-bom</artifactId>
-    <version>1.6-SNAPSHOT</version>
+    <version>1.6-RELEASE</version>
     <packaging>pom</packaging>
 
     <distributionManagement>
