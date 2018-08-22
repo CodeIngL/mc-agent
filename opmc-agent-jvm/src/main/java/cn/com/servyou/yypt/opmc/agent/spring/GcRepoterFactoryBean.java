@@ -39,11 +39,17 @@ public class GcRepoterFactoryBean {
     @Setter
     private Long periodMs = -1L;
 
+    @Setter
+    private Boolean enable = true;
+
 
     @PostConstruct
     public void init() {
-        if (!toolPresent){
-            return ;
+        if (!toolPresent) {
+            return;
+        }
+        if (!enable) {
+            return;
         }
         GcReporter reporter = new GcReporter();
         reporter.setUrl(url);
