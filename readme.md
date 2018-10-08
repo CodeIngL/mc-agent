@@ -39,7 +39,7 @@ opmc-agent是运营平台监控中心的客户端插件，配置简单。
 
 1.5-RELEASE引入了FULLGC的支持
 
-    - 服务端尚未开发,agent已有相关监测
+1.7-RELEASE为最新的版本
 
 # 快速开始
 
@@ -100,9 +100,12 @@ dependencies中添加:
                 <property name="exceptionIncludes" value="BusinessException"/>
             </bean>
             <opmc:driven/>
+            <bean class="cn.com.servyou.yypt.opmc.agent.spring.GcRepoterFactoryBean">
+                <property name="url" value="http://opmc.dc.servyou-it.com:8001/opmc-web/gc/warn"/>
+            </bean>
         </beans>
 
-## 第三步:配置VM参数
+## 第三步:配置VM参数（本地时不需要）
 
 **配置VM参数(针对tomcat)**:
 
@@ -129,7 +132,7 @@ OPMC使用Metrics作为统计插件，系统中使用对应的5种注解来对�
 
 Metrics用一个键来代表监控项(统计项)，其是形式如:**xxx.xxx.xxx.xxx**
 
-OPMC中有两种键，一种是**静态**的，一种是**动态**的，都是通过`@MCXXXX`注解实现的。
+OPMC中有两种键，一种是**静态**的，一种是**动态**（请忽略）的，都是通过`@MCXXXX`注解实现的。
 
 **静态键**
 
@@ -145,43 +148,11 @@ OPMC中有两种键，一种是**静态**的，一种是**动态**的，都是�
 
 静态键为**xxx.xxx.show**
 
-**动态键**
-
-`@MCXXXX`使用一下三个属性来构建动态键
-
-- `divideParamName` ：明细统计用于切分的参数名
-- `divideParamGetType` ：参数获取方式，有三种，分别是`URL`、`FORM`以及`PARSE`
-- `divideParamParserClass` ：使用`PARSE`类型参数时，实现了`DivideParamParser`接口的转置类的class
-
-动态键的形式如下:
-
-	静态键.${divideParamName}.${divideParamValue}
-
-其中**divideParamName**以上说明，**divideParamValue**由divideParamGetType和divideParamParserClass推导。
-
-#### @MCGauge
-
-仪表盘，记录瞬时值，注解的方法必须无参，有返回值，非`void`返回类型，推荐使用静态方法。
-
-推荐用于记录仪表性指标，如在线人数、变量长度、变量数量等信息。
-
 #### @MCCounter
 
 计数器，用于统计方法的当前请求数。
 
 推荐作用于接口，可统计接口当前的请求数。
-
-#### @MCMeter
-
-自增计数器，用于统计时间基准上的速率，即TPS。
-
-推荐作用于http接口和dubbo接口，可统计接口的访问量。
-
-#### @MCHistogram
-
-直方图，统计数据分布，目前用于统计方法耗时，即方法执行消耗时间的数据分布。
-
-推荐作用于http接口和dubbo接口，可统计接口的执行时间。
 
 #### @MCTimer
 
@@ -191,39 +162,6 @@ OPMC中有两种键，一种是**静态**的，一种是**动态**的，都是�
 
 *注1：目前还没有总的统计项的相关功能和配置。*
 
-
-**动态键介绍**：
-
-#### divideParamGetType ####
-
-`divideParamGetType`三种获取方式的配置说明如下：
-
-##### URL
-
-插件会获取方法的`HttpServletRequest`类型参数里对应名称为`divideName`的值，因此此方式需要方法入参里有`HttpServletRequest`类型参数
-
-*此方式适用于参数写在URL里的情况*
-
-##### FORM(strucs)
-
-插件会通过反射，使用`get`方法，获取方法的`ActionForm`类型参数里对应名称为`divideName`的值，因此此方式需要方法入参里有`ActionForm`类型参数，并且实际的`ActionForm`类里的参数具有`get`方法
-
-*此方式适用于参数写在Form里的情况*
-
-##### PARSE
-
-此方式需要用户新建一个参数转置类，实现下面接口:
-
-	public interface DivideParamParser {
-
-	    String parse(Object... params);
-	}
-
-插件会取该方法的返回值作为实际统计值。
-
-params对应注解方法的参数数组，例子见**FirstInputParamParser**实现
-
-*此方式适用于传入的参数不适合直接作为统计项，需要进行一些额外处理的情况*
 
 
 ---
