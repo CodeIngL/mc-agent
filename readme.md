@@ -52,7 +52,7 @@ pom中添加:
                 <dependency>
                     <groupId>cn.com.servyou</groupId>
                     <artifactId>opmc-agent-bom</artifactId>
-                    <version>1.5-RELEASE</version>
+                    <version>1.7-RELEASE</version>
                     <scope>import</scope>
                     <type>pom</type>
                 </dependency>
