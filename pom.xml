@@ -15,12 +15,12 @@
         <repository>
             <id>xinxi</id>
             <name>xinxi</name>
-            <url>http://192.168.60.102:8081/nexus/content/repositories/xinxi</url>
+            <url>http://10.64.1.13/nexus/content/repositories/xinxi</url>
         </repository>
         <snapshotRepository>
             <id>xinxi-snapshot</id>
             <name>xinxi-snapshot</name>
-            <url>http://192.168.60.102:8081/nexus/content/repositories/xinxi-snapshot</url>
+            <url>http://10.64.1.13/nexus/content/repositories/xinxi-snapshot</url>
         </snapshotRepository>
     </distributionManagement>
 
