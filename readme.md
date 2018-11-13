@@ -161,7 +161,11 @@ dependencies中添加:
 
 下载[findAgentWebLogic.sh](http://192.168.2.107/laihj/findagent/blob/master/findAgentWebLogic.sh)到domain的bin下
 
-然后编辑setDomainEnv或者startWebLogic。在你操作JAVA_OPTIONS变量之后加入
+然后在startWebLogic.sh的位置
+
+        # START WEBLOGIC
+
+添加以下代码
 
     . "$DOMAIN_HOME"/bin/findAgentWebLogic.sh "$DOMAIN_HOME"/config/config.xml
     JAVA_OPTIONS="$JAVA_OPTS -Djava.rmi.server.hostname=${本机ip}"
