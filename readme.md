@@ -61,10 +61,12 @@ pom中添加:
 
 dependencies中添加:
 
+        <!--spring框架支持-->
         <dependency>
             <groupId>cn.com.servyou</groupId>
             <artifactId>opmc-agent-spring</artifactId>
         </dependency>
+        <!--jvm异常告警(可选)-->
         <dependency>
             <groupId>cn.com.servyou</groupId>
             <artifactId>opmc-agent-jvm</artifactId>
@@ -104,12 +106,44 @@ dependencies中添加:
                 <property name="url" value="http://opmc.dc.servyou-it.com:8001/opmc-web/gc/warn"/>
             </bean>
         </beans>
+        
+## 第三步:非spring集成(可选)
+
+如果你的应用除了spring之外还有其他方式,你可以通过非spring支持来进行对应用的支持
+
+1. 类资源路径下创建aop.xml,模板如下:
+
+        <?xml version="1.0" encoding="UTF-8"?>
+		<aspectj>
+		    <!--监控非spring框架下的统计项指标-->
+			<aspects>
+		        <!-- 监控器配置,这里无需改动 -->
+		        <concrete-aspect name="OpmcMonitor" extends="cn.com.servyou.yypt.opmc.agent.fetch.weaver.aspect.MonitorByAnnotationAspectWeaver">
+		            <pointcut name="timerPoint" expression="@annotation(cn.com.servyou.yypt.opmc.agent.fetch.annotation.define.MCTimer)" />
+		            <pointcut name="meterPoint" expression="@annotation(cn.com.servyou.yypt.opmc.agent.fetch.annotation.define.MCMeter)" />
+		            <pointcut name="counterPoint" expression="@annotation(cn.com.servyou.yypt.opmc.agent.fetch.annotation.define.MCCounter)" />
+		            <pointcut name="histogramPoint" expression="@annotation(cn.com.servyou.yypt.opmc.agent.fetch.annotation.define.MCHistogram)" />
+		        </concrete-aspect>
+
+			</aspects>
+		    <!--需要监测的包,可以多个include元素来指定多个包.使用时,请替代为实际项目里的包名-->
+		    <!--<weaver options="-XnoInline -Xlint:-cantFindType"> 这种写法可以忽略掉报错信息-->
+			<weaver options="-verbose">
+		        <!--该写法下,监控器将会监控cn.com.servyou.${yourpackage}这个包下的所有类,不包括子包-->
+				<include within="cn.com.servyou.${yourpackage}.*" />
+		        <!--该写法下,监控器将会监控cn.com.servyou.${yourpackage}这个包以及子包下的所有类-->
+				<include within="cn.com.servyou.${yourpackage}..*" />
+				<exclude within="cn.com..*CGLIB*" />
+			</weaver>
+		</aspectj>
+
+
 
 ## 第三步:配置VM参数（本地时不需要）
 
 **配置VM参数(针对tomcat)**:
 
-下载[findAgent.sh](http://192.168.2.107/laihj/findagent/blob/master/findAgent.sh)该文件放置到tomcat的bin目录下
+下载[findAgent.sh](http://192.168.2.107/laihj/findagent/blob/master/findAgent.sh)到tomcat的bin目录下
 
 
 然后在catalina.sh的位置
@@ -123,6 +157,15 @@ dependencies中添加:
 
 **请把本机ip替换成你的机器IP**
 
+**配置VM参数（针对webLogic）**
+
+下载[findAgentWebLogic.sh](http://192.168.2.107/laihj/findagent/blob/master/findAgentWebLogic.sh)到domain的bin下
+
+然后编辑setDomainEnv或者startWebLogic。在你操作JAVA_OPTIONS变量之后加入
+
+    . "$DOMAIN_HOME"/bin/findAgentWebLogic.sh "$DOMAIN_HOME"/config/config.xml
+    JAVA_OPTIONS="$JAVA_OPTS -Djava.rmi.server.hostname=${本机ip}"
+    
 -----
 
 
