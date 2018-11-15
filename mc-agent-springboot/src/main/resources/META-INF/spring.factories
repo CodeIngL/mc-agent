@@ -1,0 +1,5 @@
+org.springframework.boot.SpringApplicationRunListener=\
+com.codeL.mc.agent.boot.spring.McAgentApplicationRunListener
+
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.codeL.mc.agent.boot.spring.actuator.McAgentAutoConfiguration

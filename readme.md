@@ -1,6 +1,6 @@
 ## 简介
 
-opmc-agent是运营平台监控中心的客户端插件，配置简单。
+mc-agent是运营平台监控中心的客户端插件，配置简单。
 
 功能如下
 
@@ -21,7 +21,7 @@ opmc-agent是运营平台监控中心的客户端插件，配置简单。
 
 1.1-RELEASE中注解RequestMapping等价于注解MCTimer
 
-    - Spring的properties的键值对opmc.requestMappingEnabled=true为开启等价的开关,默认为关闭。
+    - Spring的properties的键值对mc.requestMappingEnabled=true为开启等价的开关,默认为关闭。
     - 我们希望能够手动的在你想要监控的方法上添加@MCTimer注解,而不是一键开启。
 
 1.2-RELEASE支持spring更加简化的配置
@@ -50,8 +50,8 @@ pom中添加:
         <dependencyManagement>
             <dependencies>
                 <dependency>
-                    <groupId>cn.com.servyou</groupId>
-                    <artifactId>opmc-agent-bom</artifactId>
+                    <groupId>com.codeL</groupId>
+                    <artifactId>mc-agent-bom</artifactId>
                     <version>1.7-RELEASE</version>
                     <scope>import</scope>
                     <type>pom</type>
@@ -63,18 +63,18 @@ dependencies中添加:
 
         <!--spring框架支持-->
         <dependency>
-            <groupId>cn.com.servyou</groupId>
-            <artifactId>opmc-agent-spring</artifactId>
+            <groupId>com.codeL</groupId>
+            <artifactId>mc-agent-spring</artifactId>
         </dependency>
         <!--jvm异常告警(可选)-->
         <dependency>
-            <groupId>cn.com.servyou</groupId>
-            <artifactId>opmc-agent-jvm</artifactId>
+            <groupId>com.codeL</groupId>
+            <artifactId>mc-agent-jvm</artifactId>
         </dependency>
         <!--支持dubbo异常抓取功能(可选)-->
         <dependency>
-            <groupId>cn.com.servyou</groupId>
-            <artifactId>opmc-agent-dubbo</artifactId>
+            <groupId>com.codeL</groupId>
+            <artifactId>mc-agent-dubbo</artifactId>
         </dependency>
 
 
@@ -85,14 +85,13 @@ dependencies中添加:
 		<?xml version="1.0" encoding="UTF-8"?>
         <beans xmlns="http://www.springframework.org/schema/beans"
                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-               xmlns:opmc="http://www.servyou.cn/schema/opmc"
+               xmlns:mc="http://www.codeL.cn/schema/mc"
                xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-              http://www.servyou.cn/schema/opmc http://www.servyou.cn/schema/opmc/opmc.xsd">
+              http://www.codeL.cn/schema/mc http://www.codeL.cn/schema/mc/mc.xsd">
 
-            <bean id="opmcConfiguration" class="cn.com.servyou.yypt.opmc.agent.config.Configuration">
+            <bean id="mcConfiguration" class="com.codeL.mc.agent.config.Configuration">
                 <property name="enable" value="true"/>
-                <!--opmc生产地址为: http://opmc.dc.servyou-it.com:8001/opmc-web  -->
-                <property name="serverUrl" value="http://opmc.sit.91lyd.com/opmc-web"/>
+                <property name="serverUrl" value="http://xxxx/mc-web"/>
                 <!--可选参数:应用名-->
                 <property name="appName" value="${xxxx}"/>
                 <property name="catchAll" value="true"/>
@@ -101,9 +100,9 @@ dependencies中添加:
                 <!--可选参数:程序全部不抓取模式下,用户指定需要抓取的异常,ie:BusinessException-->
                 <property name="exceptionIncludes" value="BusinessException"/>
             </bean>
-            <opmc:driven/>
-            <bean class="cn.com.servyou.yypt.opmc.agent.spring.GcRepoterFactoryBean">
-                <property name="url" value="http://opmc.dc.servyou-it.com:8001/opmc-web/gc/warn"/>
+            <mc:driven/>
+            <bean class="com.codeL.mc.agent.spring.GcRepoterFactoryBean">
+                <property name="url" value="http://xxxx:8001/mc-web/gc/warn"/>
             </bean>
         </beans>
         
@@ -118,21 +117,21 @@ dependencies中添加:
 		    <!--监控非spring框架下的统计项指标-->
 			<aspects>
 		        <!-- 监控器配置,这里无需改动 -->
-		        <concrete-aspect name="OpmcMonitor" extends="cn.com.servyou.yypt.opmc.agent.fetch.weaver.aspect.MonitorByAnnotationAspectWeaver">
-		            <pointcut name="timerPoint" expression="@annotation(cn.com.servyou.yypt.opmc.agent.fetch.annotation.define.MCTimer)" />
-		            <pointcut name="meterPoint" expression="@annotation(cn.com.servyou.yypt.opmc.agent.fetch.annotation.define.MCMeter)" />
-		            <pointcut name="counterPoint" expression="@annotation(cn.com.servyou.yypt.opmc.agent.fetch.annotation.define.MCCounter)" />
-		            <pointcut name="histogramPoint" expression="@annotation(cn.com.servyou.yypt.opmc.agent.fetch.annotation.define.MCHistogram)" />
+		        <concrete-aspect name="McMonitor" extends="com.codeL.mc.agent.fetch.weaver.aspect.MonitorByAnnotationAspectWeaver">
+		            <pointcut name="timerPoint" expression="@annotation(com.codeL.mc.agent.fetch.annotation.define.MCTimer)" />
+		            <pointcut name="meterPoint" expression="@annotation(com.codeL.mc.agent.fetch.annotation.define.MCMeter)" />
+		            <pointcut name="counterPoint" expression="@annotation(com.codeL.mc.agent.fetch.annotation.define.MCCounter)" />
+		            <pointcut name="histogramPoint" expression="@annotation(com.codeL.mc.agent.fetch.annotation.define.MCHistogram)" />
 		        </concrete-aspect>
 
 			</aspects>
 		    <!--需要监测的包,可以多个include元素来指定多个包.使用时,请替代为实际项目里的包名-->
 		    <!--<weaver options="-XnoInline -Xlint:-cantFindType"> 这种写法可以忽略掉报错信息-->
 			<weaver options="-verbose">
-		        <!--该写法下,监控器将会监控cn.com.servyou.${yourpackage}这个包下的所有类,不包括子包-->
-				<include within="cn.com.servyou.${yourpackage}.*" />
-		        <!--该写法下,监控器将会监控cn.com.servyou.${yourpackage}这个包以及子包下的所有类-->
-				<include within="cn.com.servyou.${yourpackage}..*" />
+		        <!--该写法下,监控器将会监控com.codeL.${yourpackage}这个包下的所有类,不包括子包-->
+				<include within="com.codeL.${yourpackage}.*" />
+		        <!--该写法下,监控器将会监控com.codeL.${yourpackage}这个包以及子包下的所有类-->
+				<include within="com.codeL.${yourpackage}..*" />
 				<exclude within="cn.com..*CGLIB*" />
 			</weaver>
 		</aspectj>
@@ -175,11 +174,11 @@ dependencies中添加:
 
 ### 信息统计介绍 ###
 
-OPMC使用Metrics作为统计插件，系统中使用对应的5种注解来对应Metrics的度量类型。
+MC使用Metrics作为统计插件，系统中使用对应的5种注解来对应Metrics的度量类型。
 
 Metrics用一个键来代表监控项(统计项)，其是形式如:**xxx.xxx.xxx.xxx**
 
-OPMC中有两种键，一种是**静态**的，一种是**动态**（请忽略）的，都是通过`@MCXXXX`注解实现的。
+MC中有两种键，一种是**静态**的，一种是**动态**（请忽略）的，都是通过`@MCXXXX`注解实现的。
 
 **静态键**
 
@@ -217,7 +216,7 @@ OPMC中有两种键，一种是**静态**的，一种是**动态**（请忽略�
 
 * 无法抓取Controller层的异常
 
-请确认是否有标注了`@ControllerAdvice`注解的统一异常处理器，如没有，请参照源码test包下`cn.com.servyou.yypt.opmc.agent.exceptionadvice.HandlerAdvice`类。
+请确认是否有标注了`@ControllerAdvice`注解的统一异常处理器，如没有，请参照源码test包下`com.codeL.mc.agent.exceptionadvice.HandlerAdvice`类。
 
 * 非spring框架下，统计项没有生效
 

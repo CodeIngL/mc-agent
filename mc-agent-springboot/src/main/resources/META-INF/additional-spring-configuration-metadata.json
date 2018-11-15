@@ -1,0 +1,49 @@
+{
+  "properties": [
+    {
+      "name": "mc.appName",
+      "type": "java.lang.String",
+      "description": "mc endpoint's appName"
+    },
+    {
+      "name": "mc.serverUrl",
+      "type": "java.lang.String",
+      "description": "mc server's url",
+      "defaultValue": "http://mc.dc.codeL-it.com:8001/mc-web"
+    },
+    {
+      "name": "mc.enable",
+      "type": "java.lang.Boolean",
+      "description": "mc enable or disable",
+      "defaultValue": true
+    },
+    {
+      "name": "mc.exceptionIncludes",
+      "type": "java.util.Set<java.lang.String>",
+      "description": "mc exception that we should catch"
+    },
+    {
+      "name": "mc.exceptionExcludes",
+      "type": "java.util.Set<java.lang.String>",
+      "description": "mc exception that we should exclude"
+    },
+    {
+      "name": "mc.enableMetrics",
+      "type": "java.lang.Boolean",
+      "description": "mc exception that we should catch",
+      "defaultValue": false
+    },
+    {
+      "name": "mc.catchAll",
+      "type": "java.lang.Boolean",
+      "description": "mc exception that we should catch",
+      "defaultValue": true
+    },
+    {
+      "name": "mc.reporters",
+      "type": "java.util.List<com.codeL.mc.agent.boot.spring.actuator.McAgentConfigurationProperties.McReporterProperties>",
+      "description": "mc exception that we should catch"
+    }
+  ]
+}
+

@@ -1,5 +1,0 @@
-org.springframework.boot.SpringApplicationRunListener=\
-cn.com.servyou.yypt.opmc.agent.boot.spring.OpmcAgentApplicationRunListener
-
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-cn.com.servyou.yypt.opmc.agent.boot.spring.actuator.OpmcAgentAutoConfiguration

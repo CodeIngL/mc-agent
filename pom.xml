@@ -4,39 +4,26 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>cn.com.servyou</groupId>
-    <artifactId>opmc-agent</artifactId>
+    <groupId>com.codeL</groupId>
+    <artifactId>mc-agent</artifactId>
     <packaging>pom</packaging>
     <version>1.8-SNAPSHOT</version>
 
-    <name>opmc-agent</name>
-
-    <distributionManagement>
-        <repository>
-            <id>xinxi</id>
-            <name>xinxi</name>
-            <url>http://10.64.1.13/nexus/content/repositories/xinxi</url>
-        </repository>
-        <snapshotRepository>
-            <id>xinxi-snapshot</id>
-            <name>xinxi-snapshot</name>
-            <url>http://10.64.1.13/nexus/content/repositories/xinxi-snapshot</url>
-        </snapshotRepository>
-    </distributionManagement>
+    <name>mc-agent</name>
 
     <modules>
-        <module>opmc-agent-core</module>
-        <module>opmc-agent-spring</module>
-        <module>opmc-agent-struts</module>
-        <module>opmc-agent-conf</module>
-        <module>opmc-agent-core-support</module>
-        <module>opmc-agent-dubbo</module>
-        <module>opmc-agent-log</module>
-        <module>opmc-agent-reporter</module>
-        <module>opmc-agent-springboot</module>
-        <module>opmc-agent-bom</module>
-        <module>opmc-agent-jvm</module>
-        <module>opmc-agent-common</module>
+        <module>mc-agent-core</module>
+        <module>mc-agent-spring</module>
+        <module>mc-agent-struts</module>
+        <module>mc-agent-conf</module>
+        <module>mc-agent-core-support</module>
+        <module>mc-agent-dubbo</module>
+        <module>mc-agent-log</module>
+        <module>mc-agent-reporter</module>
+        <module>mc-agent-springboot</module>
+        <module>mc-agent-bom</module>
+        <module>mc-agent-jvm</module>
+        <module>mc-agent-common</module>
     </modules>
 
     <properties>
@@ -52,28 +39,28 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>cn.com.servyou</groupId>
-                <artifactId>opmc-agent-common</artifactId>
+                <groupId>com.codeL</groupId>
+                <artifactId>mc-agent-common</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>cn.com.servyou</groupId>
-                <artifactId>opmc-agent-conf</artifactId>
+                <groupId>com.codeL</groupId>
+                <artifactId>mc-agent-conf</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>cn.com.servyou</groupId>
-                <artifactId>opmc-agent-core</artifactId>
+                <groupId>com.codeL</groupId>
+                <artifactId>mc-agent-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>cn.com.servyou</groupId>
-                <artifactId>opmc-agent-core-support</artifactId>
+                <groupId>com.codeL</groupId>
+                <artifactId>mc-agent-core-support</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>cn.com.servyou</groupId>
-                <artifactId>opmc-agent-log</artifactId>
+                <groupId>com.codeL</groupId>
+                <artifactId>mc-agent-log</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
