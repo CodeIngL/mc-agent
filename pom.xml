@@ -29,7 +29,7 @@
     <properties>
         <aspectj.verion>1.8.9</aspectj.verion>
         <cglib.version>3.2.4</cglib.version>
-        <junit.version>4.12</junit.version>
+        <junit.version>4.13.1</junit.version>
         <slf.version>1.7.21</slf.version>
         <groovy.version>2.2.2</groovy.version>
         <metrics.version>3.2.5</metrics.version>
