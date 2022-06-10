@@ -12,7 +12,7 @@
     <artifactId>mc-agent-dubbo</artifactId>
 
     <properties>
-        <dubbo.verion>2.5.3</dubbo.verion>
+        <dubbo.verion>2.6.12</dubbo.verion>
     </properties>
 
     <dependencies>
